@@ -51,5 +51,6 @@ Expression::~Expression() {
 }
 
 Expression::Expression() {
+  this->type = "expression"
   this->value = new Number(0);
 }

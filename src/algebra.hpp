@@ -1,4 +1,5 @@
 #include "algebra/base.hpp"
+#include "algebra/object.hpp"
+#include "algebra/symbol.hpp"
 #include "algebra/value.hpp"
-#include "algebra/number.hpp"
-#include "algebra/operations.hpp"
+#include "algebra/expression.hpp"

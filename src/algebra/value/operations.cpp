@@ -8,18 +8,18 @@
 #include "list.hpp"
 #include "operations.hpp"
 
-using namespace mathgraph::algebra;
+using namespace mathgraph::algebra::value;
 
 Value* generic_operation(Value* a, Value* b, approximate_t (*operation)(approximate_t, approximate_t)) {
-  if (a->type == "number" && b->type == "number") {
+  if (a->type == "value::number" && b->type == "value::number") {
     return new Number((*operation)((dynamic_cast<Number*>(a))->get_value(), (dynamic_cast<Number*>(b))->get_value()));
-  } else if (a->type == "list" || b->type == "list") {
+  } else if (a->type == "value::list" || b->type == "value::list") {
     std::vector<Value*> new_list_elements;
     List* list; Value* other;
     if (a->type == "list") {
       list = dynamic_cast<List*>(a);
       other = b;
-    } else if (b->type == "list") {
+    } else if (b->type == "value::list") {
       list = dynamic_cast<List*>(b);
       other = a;
     }
@@ -33,17 +33,20 @@ Value* generic_operation(Value* a, Value* b, approximate_t (*operation)(approxim
 }
 
 std::ostream& operations::output_to_stream(std::ostream& stream, Value* a) {
-  if (a->type == "number") {
+  if (a->type == "value::number") {
     stream << (dynamic_cast<Number*>(a))->get_value();
-  } else if (a->type == "list") {
+  } else if (a->type == "value::list") {
     stream << "{";
     auto elements = (dynamic_cast<List*>(a))->get_elements();
-    for (auto it = elements.begin(); it < elements.end() - 1; ++it) {
+    for (auto it = elements.begin(); it < elements.end(); ++it) {
       operations::output_to_stream(stream, *it);
-      stream << ", ";
+      if (it < elements.end() - 1) {
+        stream << ", ";
+      }
     }
-    operations::output_to_stream(stream, *(elements.end() - 1));
     stream << "}";
+  } else if (a->type == "value") {
+    stream << "undefined";
   }
   return stream;
 }
@@ -64,8 +67,4 @@ Value* operations::power(Value* a, Value* b) { return generic_operation(a, b, &O
 Value* operations::root(Value* a, Value* b) { return generic_operation(a, b, &OP_root); }
 Value* operations::logarithm(Value* a, Value* b) { return generic_operation(a, b, &OP_logarithm); }
 
-// Value* operator+(Value* a, Value* b) { operations::add(a, b); }
-// Value* operator-(Value* a, Value* b) { operations::subtract(a, b); }
-// Value* operator*(Value* a, Value* b) { operations::multiply(a, b); }
-// Value* operator/(Value* a, Value* b) { operations::divide(a, b); }
 std::ostream& operator<<(std::ostream& stream, Value* a) { operations::output_to_stream(stream, a); }

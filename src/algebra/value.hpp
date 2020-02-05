@@ -1,17 +1,7 @@
 #pragma once
 
-#include <string>
-
-#include "base.hpp"
-
-namespace mathgraph::algebra {
-  class Value;
-}
-
-using namespace mathgraph::algebra;
-
-class mathgraph::algebra::Value {
-public:
-  std::string type;
-  virtual ~Value();
-};
+#include "value/base.hpp"
+#include "value/value.hpp"
+#include "value/number.hpp"
+#include "value/list.hpp"
+#include "value/operations.hpp"
