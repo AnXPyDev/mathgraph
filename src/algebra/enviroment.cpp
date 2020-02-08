@@ -18,7 +18,7 @@ expression::Expression* Enviroment::get_value(Symbol* symbol) {
   if (this->parent != NULL) {
     return this->parent->get_value(symbol);
   }
-  return new expression::Expression();
+  return expression::undefined_expression;
 }
 
 void Enviroment::set_parent(Enviroment* parent) {
@@ -33,4 +33,8 @@ Enviroment::~Enviroment() {}
 
 Enviroment::Enviroment() {
   this->parent = NULL;
+}
+
+namespace mathgraph::algebra {
+  Enviroment* undefined_enviroment = new Enviroment();
 }

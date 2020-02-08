@@ -6,6 +6,7 @@
 
 namespace mathgraph::algebra {
   class Symbol;
+  extern Symbol* undefined_symbol;
 }
 
 using namespace mathgraph::algebra;

@@ -5,6 +5,7 @@
 
 namespace mathgraph::algebra::value {
   class Value;
+  extern Value* undefined_value;
 }
 
 using namespace mathgraph::algebra;

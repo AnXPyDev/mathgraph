@@ -3,3 +3,4 @@
 #include "expression/constant.hpp"
 #include "expression/list.hpp"
 #include "expression/reference.hpp"
+#include "expression/operations.hpp"

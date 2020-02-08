@@ -1,13 +1,14 @@
-#include "../enviroment.hpp"
 #include "../value/value.hpp"
+#include "../enviroment.hpp"
 #include "constant.hpp"
 
 using namespace mathgraph::algebra;
 
-void expression::Constant::set_value(value::Value* value) {
+expression::Constant::Constant(value::Value* value) {
+  this->type = "expression::constant";
   this->value = value;
 }
 
-expression::Constant::Constant(value::Value* value) : Expression() {
-  this->set_value(value);
+value::Value* expression::Constant::get_value(Enviroment* env) {
+  return this->value;
 }

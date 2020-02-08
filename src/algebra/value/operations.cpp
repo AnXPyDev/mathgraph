@@ -16,10 +16,10 @@ Value* generic_operation(Value* a, Value* b, approximate_t (*operation)(approxim
   } else if (a->type == "value::list" || b->type == "value::list") {
     std::vector<Value*> new_list_elements;
     List* list; Value* other;
-    if (a->type == "list") {
+    if (a->type == "value::list") {
       list = dynamic_cast<List*>(a);
       other = b;
-    } else if (b->type == "value::list") {
+    } else {
       list = dynamic_cast<List*>(b);
       other = a;
     }
@@ -29,7 +29,7 @@ Value* generic_operation(Value* a, Value* b, approximate_t (*operation)(approxim
     }
     return new List(new_list_elements);
   }
-  return new Value();
+  return value::undefined_value;
 }
 
 std::ostream& operations::output_to_stream(std::ostream& stream, Value* a) {
@@ -55,6 +55,7 @@ approximate_t OP_add(approximate_t a, approximate_t b) { return a + b; }
 approximate_t OP_subtract(approximate_t a, approximate_t b) { return a - b; }
 approximate_t OP_multiply(approximate_t a, approximate_t b) { return a * b; }
 approximate_t OP_divide(approximate_t a, approximate_t b) { return a / b; }
+approximate_t OP_modulus(approximate_t a, approximate_t b) { return a / b; }
 approximate_t OP_power(approximate_t a, approximate_t n) { return pow(a, n); }
 approximate_t OP_root(approximate_t a, approximate_t n) { return pow(a, 1/n); }
 approximate_t OP_logarithm(approximate_t a, approximate_t base) { return log(a) / log(base); }
@@ -63,6 +64,7 @@ Value* operations::add(Value* a, Value* b) { return generic_operation(a, b, &OP_
 Value* operations::subtract(Value* a, Value* b) { return generic_operation(a, b, &OP_subtract); }
 Value* operations::multiply(Value* a, Value* b) { return generic_operation(a, b, &OP_multiply); }
 Value* operations::divide(Value* a, Value* b) { return generic_operation(a, b, &OP_divide); }
+Value* operations::modulus(Value* a, Value* b) { return generic_operation(a, b, &OP_modulus); }
 Value* operations::power(Value* a, Value* b) { return generic_operation(a, b, &OP_power); }
 Value* operations::root(Value* a, Value* b) { return generic_operation(a, b, &OP_root); }
 Value* operations::logarithm(Value* a, Value* b) { return generic_operation(a, b, &OP_logarithm); }

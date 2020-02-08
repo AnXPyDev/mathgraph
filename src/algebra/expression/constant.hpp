@@ -1,9 +1,7 @@
 #pragma once
 
-#include "../enviroment.hpp"
 #include "../value/value.hpp"
-#include "../value/number.hpp"
-#include "base.hpp"
+#include "../enviroment.hpp"
 #include "expression.hpp"
 
 namespace mathgraph::algebra::expression {
@@ -13,9 +11,8 @@ namespace mathgraph::algebra::expression {
 using namespace mathgraph::algebra;
 
 class mathgraph::algebra::expression::Constant : public expression::Expression {
-private:
-  value::Value* constant_value;
 public:
-  void set_value(value::Value* value);
-  Constant(value::Value* value = new value::Number(0));
+  value::Value* value;
+  value::Value* get_value(Enviroment* env = undefined_enviroment);
+  Constant(value::Value* value = value::undefined_value);
 };
