@@ -5,9 +5,9 @@ endef
 
 NAME=mathgraph
 CC=g++
-MAINFLAGS=-g
+MAINFLAGS=
 OBJECTFLAGS=
-OBJECTS=src/main src/algebra/object src/algebra/symbol src/algebra/enviroment src/algebra/value/value src/algebra/value/number src/algebra/value/list src/algebra/value/operations src/algebra/expression/expression src/algebra/expression/constant src/algebra/expression/list src/algebra/expression/reference src/algebra/expression/operations
+OBJECTS=src/main src/algebra/object src/algebra/symbol src/algebra/enviroment src/algebra/value/value src/algebra/value/number src/algebra/value/list src/algebra/value/bool src/algebra/value/operations src/algebra/expression/expression src/algebra/expression/constant src/algebra/expression/list src/algebra/expression/reference src/algebra/expression/operations src/algebra/expression/function src/algebra/expression/call
 
 main: objects
 	@$(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(object).o)

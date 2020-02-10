@@ -4,3 +4,5 @@
 #include "expression/list.hpp"
 #include "expression/reference.hpp"
 #include "expression/operations.hpp"
+#include "expression/function.hpp"
+#include "expression/call.hpp"

@@ -10,6 +10,7 @@
 namespace mathgraph::algebra {
   class Enviroment;
   extern Enviroment* undefined_enviroment;
+  extern Enviroment* default_enviroment;
 }
 
 #include "expression/expression.hpp"

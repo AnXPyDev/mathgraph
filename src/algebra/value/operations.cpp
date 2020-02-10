@@ -6,6 +6,7 @@
 #include "base.hpp"
 #include "number.hpp"
 #include "list.hpp"
+#include "bool.hpp"
 #include "operations.hpp"
 
 using namespace mathgraph::algebra::value;
@@ -28,6 +29,23 @@ Value* generic_operation(Value* a, Value* b, approximate_t (*operation)(approxim
       new_list_elements.push_back(generic_operation(*it, other, operation));
     }
     return new List(new_list_elements);
+  } else if (a->type == "value::bool" && b->type == "value::bool") {
+    approximate_t ret = (*operation)((dynamic_cast<Bool*>(a))->get_value() ? 1 : 0, (dynamic_cast<Bool*>(b))->get_value() ? 1 : 0);
+    return new Bool(ret > 0);
+  } else if (a->type == "value::bool" || b->type == "value::bool") {
+    Bool* boolean; Value* other;
+    if (a->type == "value::bool") {
+      boolean = dynamic_cast<Bool*>(a);
+      other = b;
+    } else {
+      boolean = dynamic_cast<Bool*>(b);
+      other = a;
+    }
+    if (boolean->get_value()) {
+      return other;
+    } else {
+      return undefined_value;
+    }
   }
   return value::undefined_value;
 }
@@ -45,7 +63,9 @@ std::ostream& operations::output_to_stream(std::ostream& stream, Value* a) {
       }
     }
     stream << "}";
-  } else if (a->type == "value") {
+  } else if (a->type == "value::bool") {
+    stream << ((dynamic_cast<Bool*>(a))->get_value() ? "True" : "False");
+  } else {
     stream << "undefined";
   }
   return stream;
@@ -69,4 +89,4 @@ Value* operations::power(Value* a, Value* b) { return generic_operation(a, b, &O
 Value* operations::root(Value* a, Value* b) { return generic_operation(a, b, &OP_root); }
 Value* operations::logarithm(Value* a, Value* b) { return generic_operation(a, b, &OP_logarithm); }
 
-std::ostream& operator<<(std::ostream& stream, Value* a) { operations::output_to_stream(stream, a); }
+std::ostream& operator<<(std::ostream& stream, Value* a) { return operations::output_to_stream(stream, a); }
