@@ -5,19 +5,19 @@
 #include "value.hpp"
 #include "list.hpp"
 
-using namespace mathgraph::algebra::value;
+using namespace mathgraph::algebra;
 
-void List::set_elements(std::vector<Value*> elements) {
+void value::List::set_elements(std::vector<value::Value_ptr> elements) {
   this->elements = elements;
 }
 
-const std::vector<Value*> &List::get_elements() {
+const std::vector<value::Value_ptr> &value::List::get_elements() {
   return this->elements;
 }
 
-List::List(std::vector<Value*> elements) {
+value::List::List(std::vector<value::Value_ptr> elements) {
   this->type = "value::list";
   this->set_elements(elements);
 }
 
-List::~List() {}
+value::List::~List() {}

@@ -4,11 +4,11 @@
 
 using namespace mathgraph::algebra;
 
-expression::Constant::Constant(value::Value* value) {
+expression::Constant::Constant(value::Value_ptr value) {
   this->type = "expression::constant";
   this->value = value;
 }
 
-value::Value* expression::Constant::get_value(Enviroment* env) {
+value::Value_ptr expression::Constant::get_value(Enviroment_ptr env) {
   return this->value;
 }

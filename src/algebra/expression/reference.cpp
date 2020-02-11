@@ -6,15 +6,15 @@
 
 using namespace mathgraph::algebra;
 
-expression::Reference::Reference(Symbol* symbol) {
+expression::Reference::Reference(Symbol_ptr symbol) {
   this->type = "expression::reference";
   this->symbol = symbol;
 }
 
-expression::Expression* expression::Reference::get_expression(Enviroment* env) {
+expression::Expression_ptr expression::Reference::get_expression(Enviroment_ptr env, Expression_ptr caller) {
   return env->get_value(this->symbol);
 }
 
-value::Value* expression::Reference::get_value(Enviroment* env) {
+value::Value_ptr expression::Reference::get_value(Enviroment_ptr env) {
   return this->get_expression(env)->get_value(env);
 }

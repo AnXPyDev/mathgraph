@@ -8,14 +8,17 @@ expression::Expression::Expression() {
   this->type = "expression";
 }
 
-expression::Expression* expression::Expression::get_expression(Enviroment* env) {
-  return this;
+expression::Expression_ptr expression::Expression::get_expression(Enviroment_ptr env, expression::Expression_ptr caller) {
+  if (caller != NULL) {
+    return caller;
+  }
+  return expression::Expression_ptr(this);
 }
 
-value::Value* expression::Expression::get_value(Enviroment* env) {
+value::Value_ptr expression::Expression::get_value(Enviroment_ptr env) {
   return value::undefined_value;
 }
 
 namespace mathgraph::algebra::expression {
-  Expression* undefined_expression = new Expression();
+  Expression_ptr undefined_expression(new Expression());
 }

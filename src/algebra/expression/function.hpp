@@ -15,13 +15,13 @@ using namespace mathgraph::algebra;
 
 class mathgraph::algebra::expression::Function : public expression::Expression {
 private:
-  std::vector<Symbol*> argument_list;
-  expression::Expression* expression;
+  std::vector<Symbol_ptr> argument_list;
+  expression::Expression_ptr expression;
 public:
-  const std::vector<Symbol*> &get_argument_list();
-  void set_argument_list(std::vector<Symbol*> argument_list);
-  value::Value* get_value(Enviroment* env = undefined_enviroment);
-  expression::Expression* get_expression(Enviroment* env = undefined_enviroment);
-  void set_expression(expression::Expression* expression);
-  Function(std::vector<Symbol*> argument_list = {}, expression::Expression* expression = expression::undefined_expression);
+  const std::vector<Symbol_ptr> &get_argument_list();
+  void set_argument_list(std::vector<Symbol_ptr> argument_list);
+  value::Value_ptr get_value(Enviroment_ptr env = undefined_enviroment);
+  expression::Expression_ptr get_expression(Enviroment_ptr env = undefined_enviroment, Expression_ptr caller = NULL);
+  void set_expression(expression::Expression_ptr expression);
+  Function(std::vector<Symbol_ptr> argument_list = {}, expression::Expression_ptr expression = expression::undefined_expression);
 };

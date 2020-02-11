@@ -1,12 +1,14 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "object.hpp"
 
 namespace mathgraph::algebra {
   class Symbol;
-  extern Symbol* undefined_symbol;
+  typedef std::shared_ptr<Symbol> Symbol_ptr;
+  extern Symbol_ptr undefined_symbol;
 }
 
 using namespace mathgraph::algebra;

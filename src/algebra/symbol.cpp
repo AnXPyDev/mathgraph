@@ -20,5 +20,5 @@ Symbol::Symbol(std::string value) {
 }
 
 namespace mathgraph::algebra {
-  Symbol* undefined_symbol = new Symbol("undefined__"); 
+  Symbol_ptr undefined_symbol(new Symbol("undefined__"));
 }

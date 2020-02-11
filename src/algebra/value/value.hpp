@@ -1,11 +1,14 @@
 #pragma once
 
+#include <memory>
+
 #include "../object.hpp"
 #include "base.hpp"
 
 namespace mathgraph::algebra::value {
   class Value;
-  extern Value* undefined_value;
+  typedef std::shared_ptr<Value> Value_ptr;
+  extern Value_ptr undefined_value;
 }
 
 using namespace mathgraph::algebra;

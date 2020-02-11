@@ -14,13 +14,13 @@ using namespace mathgraph::algebra;
 
 class mathgraph::algebra::expression::Call : public expression::Expression {
 private:
-  expression::Expression* expression;
-  std::vector<expression::Expression*> arguments;
+  expression::Expression_ptr expression;
+  std::vector<expression::Expression_ptr> arguments;
 public:
-  value::Value* get_value(Enviroment* env = undefined_enviroment);
-  expression::Expression* get_expression(Enviroment* env = undefined_enviroment);
-  void set_expression(expression::Expression* expression);
-  void set_arguments(std::vector<expression::Expression*> arguments);
-  const std::vector<expression::Expression*> &get_arguments();
-  Call(expression::Expression* expression = expression::undefined_expression, std::vector<expression::Expression*> arguments = {});
+  value::Value_ptr get_value(Enviroment_ptr env = undefined_enviroment);
+  expression::Expression_ptr get_expression(Enviroment_ptr env = undefined_enviroment, Expression_ptr caller = NULL);
+  void set_expression(expression::Expression_ptr expression);
+  void set_arguments(std::vector<expression::Expression_ptr> arguments);
+  const std::vector<expression::Expression_ptr> &get_arguments();
+  Call(expression::Expression_ptr expression = expression::undefined_expression, std::vector<expression::Expression_ptr> arguments = {});
 };

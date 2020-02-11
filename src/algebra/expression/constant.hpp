@@ -12,7 +12,7 @@ using namespace mathgraph::algebra;
 
 class mathgraph::algebra::expression::Constant : public expression::Expression {
 public:
-  value::Value* value;
-  value::Value* get_value(Enviroment* env = undefined_enviroment);
-  Constant(value::Value* value = value::undefined_value);
+  value::Value_ptr value;
+  value::Value_ptr get_value(Enviroment_ptr env = undefined_enviroment);
+  Constant(value::Value_ptr value = value::undefined_value);
 };

@@ -15,8 +15,8 @@ using namespace mathgraph::algebra;
 
 class mathgraph::algebra::expression::List : public expression::Expression {
 private:
-  std::vector<expression::Expression*> elements;
+  std::vector<expression::Expression_ptr> elements;
 public:
-  value::Value* get_value(Enviroment* env = undefined_enviroment);
-  List(std::vector<expression::Expression*> elements = {});
+  value::Value_ptr get_value(Enviroment_ptr env = undefined_enviroment);
+  List(std::vector<expression::Expression_ptr> elements = {});
 };

@@ -8,5 +8,5 @@ value::Value::Value() {
 }
 
 namespace mathgraph::algebra::value {
-  Value* undefined_value = new Value();
+  Value_ptr undefined_value(new Value());
 }

@@ -1,5 +1,6 @@
 #include <map>
 #include <string>
+#include <memory>
 
 #include "enviroment.hpp"
 #include "symbol.hpp"
@@ -7,11 +8,11 @@
 
 using namespace mathgraph::algebra;
 
-void Enviroment::set_value(Symbol* symbol, expression::Expression* expression) {
+void Enviroment::set_value(Symbol_ptr symbol, expression::Expression_ptr expression) {
   this->symbol_map[symbol->get_value()] = expression;
 }
 
-expression::Expression* Enviroment::get_value(Symbol* symbol) {
+expression::Expression_ptr Enviroment::get_value(Symbol_ptr symbol) {
   if (this->symbol_map.find(symbol->get_value()) != this->symbol_map.end()) {
     return this->symbol_map[symbol->get_value()];
   }
@@ -21,11 +22,11 @@ expression::Expression* Enviroment::get_value(Symbol* symbol) {
   return expression::undefined_expression;
 }
 
-void Enviroment::set_parent(Enviroment* parent) {
+void Enviroment::set_parent(Enviroment_ptr parent) {
   this->parent = parent;
 }
 
-Enviroment* Enviroment::get_parent() {
+Enviroment_ptr Enviroment::get_parent() {
   return this->parent;
 }
 
@@ -36,5 +37,5 @@ Enviroment::Enviroment() {
 }
 
 namespace mathgraph::algebra {
-  Enviroment* undefined_enviroment = new Enviroment();
+  Enviroment_ptr undefined_enviroment(new Enviroment());
 }

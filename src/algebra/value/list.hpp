@@ -8,14 +8,14 @@ namespace mathgraph::algebra::value {
   class List;
 }
 
-using namespace mathgraph::algebra::value;
+using namespace mathgraph::algebra;
 
-class mathgraph::algebra::value::List : public Value {
+class mathgraph::algebra::value::List : public value::Value {
 private:
-  std::vector<Value*> elements;
+  std::vector<value::Value_ptr> elements;
 public:
-  const std::vector<Value*> &get_elements();
-  void set_elements(std::vector<Value*> elements);
+  const std::vector<value::Value_ptr> &get_elements();
+  void set_elements(std::vector<value::Value_ptr> elements);
   ~List();
-  List(std::vector<Value*> elements = {});
+  List(std::vector<value::Value_ptr> elements = {});
 };
