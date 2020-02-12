@@ -14,7 +14,7 @@ using namespace mathgraph::algebra;
 #define VEC std::vector<expression::Expression_ptr>
 #define ADD(a, b) expression::Expression_ptr(new expression::operations::Add(a, b))
 #define SUB(a, b) expression::Expression_ptr(new expression::operations::Subtract(a, b))
-#define MUL(a, b) expression::Expression_ptr(new expression::operations::Multiply(a, b))
+#define MULT(a, b) expression::Expression_ptr(new expression::operations::Multiply(a, b))
 #define DIV(a, b) expression::Expression_ptr(new expression::operations::Divide(a, b))
 #define MOD(a, b) expression::Expression_ptr(new expression::operations::Modulus(a, b))
 #define POW(a, b) expression::Expression_ptr(new expression::operations::Power(a, b))
@@ -38,8 +38,13 @@ using namespace mathgraph::algebra;
 
 int main() {
   auto env = ENVIROMENT();
-  env->set_value(SYM("ret"), CALL(REF("fac"), {NUM(5)}));
+  env->set_value(SYM("g"), FUNC({SYM("x")}, REF("x")));
+  env->set_value(SYM("z"), FUNC({SYM("x")}, CALL(REF("g"), {REF("x")})));
+  env->set_value(SYM("f"), FUNC({SYM("x")}, CALL(REF("f"), {REF("x")})));
 
+  env->set_value(SYM("fac"), FUNC({SYM("a")}, IF(LESSEQ(REF("a"), NUM(1)), NUM(1), MULT(REF("a"), CALL(REF("fac"), {SUB(REF("a"), NUM(1))})))));
+
+  env->set_value(SYM("ret"), CALL(REF("fac"), {NUM(5)}));
   std::cout << REF("ret")->get_value(env) << std::endl;
   
 }

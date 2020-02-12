@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../symbol.hpp"
 #include "../value/value.hpp"
 #include "../enviroment.hpp"

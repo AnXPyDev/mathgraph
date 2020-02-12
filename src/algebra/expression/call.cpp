@@ -1,9 +1,12 @@
+#include <stdio.h>
 #include <vector>
+#include <iostream>
 #include <string>
 
 #include "../symbol.hpp"
 #include "../enviroment.hpp"
 #include "../value/value.hpp"
+#include "constant.hpp"
 #include "function.hpp"
 #include "call.hpp"
 
@@ -21,12 +24,8 @@ const std::vector<expression::Expression_ptr> &expression::Call::get_arguments()
   return this->arguments;
 }
 
-expression::Expression_ptr expression::Call::get_expression(Enviroment_ptr env, Expression_ptr caller) {
-  return this->expression->get_expression(env, this->expression);
-}
-
 value::Value_ptr expression::Call::get_value(Enviroment_ptr env) {
-  expression::Expression_ptr expr = this->get_expression(env);
+  expression::Expression_ptr expr = this->expression->get_expression(env, this->expression);
   Enviroment_ptr temp_env(new Enviroment());
   temp_env->set_parent(env);
   std::vector<Symbol_ptr> argument_list;
@@ -34,14 +33,16 @@ value::Value_ptr expression::Call::get_value(Enviroment_ptr env) {
     argument_list = (dynamic_cast<expression::Function*>(expr.get()))->get_argument_list();
   }
   for (int i = 0; i < this->arguments.size(); ++i) {
+    expression::Expression_ptr constant_arg = expression::Expression_ptr(new expression::Constant(this->arguments[i]->get_value(env)));
     if (i >= argument_list.size()) {
       Symbol_ptr arg_name(new Symbol("_arg" + std::to_string(i)));
-      temp_env->set_value(arg_name, this->arguments[i]);
+      temp_env->set_value(arg_name, constant_arg);
     } else {
-      temp_env->set_value(argument_list[i], this->arguments[i]);
+      temp_env->set_value(argument_list[i], constant_arg);
     }
   }
-  return expr->get_value(temp_env);
+  auto ret = expr->get_value(temp_env);
+  return ret;
 }
 
 

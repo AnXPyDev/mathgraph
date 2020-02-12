@@ -14,62 +14,62 @@ expression::Operation::Operation(expression::Expression_ptr expr_a, expression::
 }
 
 value::Value_ptr expression::operations::Add::get_value(Enviroment_ptr env) {
-  return value::operations::add(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::add(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Subtract::get_value(Enviroment_ptr env) {
-  return value::operations::subtract(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::subtract(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Multiply::get_value(Enviroment_ptr env) {
-  return value::operations::multiply(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::multiply(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Divide::get_value(Enviroment_ptr env) {
-  return value::operations::divide(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::divide(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Modulus::get_value(Enviroment_ptr env) {
-  return value::operations::modulus(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::modulus(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Power::get_value(Enviroment_ptr env) {
-  return value::operations::power(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::power(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Root::get_value(Enviroment_ptr env) {
-  return value::operations::root(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::root(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Logarithm::get_value(Enviroment_ptr env) {
-  return value::operations::logarithm(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::logarithm(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::And::get_value(Enviroment_ptr env) {
-  return value::operations::conjunction(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::conjunction(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Or::get_value(Enviroment_ptr env) {
-  return value::operations::disjunction(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::disjunction(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Equal::get_value(Enviroment_ptr env) {
-  return value::operations::equal(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Less::get_value(Enviroment_ptr env) {
-  return value::operations::less(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::less(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::More::get_value(Enviroment_ptr env) {
-  return value::operations::more(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::more(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 value::Value_ptr expression::operations::Less_or_equal::get_value(Enviroment_ptr env) {
-  return value::operations::less_or_equal(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::less_or_equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::More_or_equal::get_value(Enviroment_ptr env) {
-  return value::operations::more_or_equal(((this->expr_a)->get_expression(env, this->expr_a))->get_value(env), ((this->expr_b)->get_expression(env, this->expr_b))->get_value(env));
+  return value::operations::more_or_equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
 }
 
 value::Value_ptr expression::operations::Negate::get_value(Enviroment_ptr env) {
