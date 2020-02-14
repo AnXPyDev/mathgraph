@@ -11,14 +11,14 @@ using namespace std;
 
 namespace mathgraph::algebra {
   struct Scope;
-  struct Symbol : public Expression {
+  struct Number : public Expression {
   private:
-    string value;
+    approx_t value;
   public:
-    const string type = "symbol";
-    const string& get();
+    const string type = "number";
+    const approx_t& get();
     ostream& output_to_stream(ostream& os);
-    Symbol(string value);
-    static shared_ptr<Expression> construct(string value = "");
+    Number(approx_t value);
+    static shared_ptr<Expression> construct(approx_t value = 0);
   };
 }

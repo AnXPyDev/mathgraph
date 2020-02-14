@@ -1,24 +1,17 @@
-#include <string>
-
 #include "symbol.hpp"
 
-using namespace mathgraph::algebra;
-
-const std::string &Symbol::get_value() {
-  return this->value;
-}
-
-void Symbol::set_value(std::string value) {
-  this->value = value;
-}
-
-Symbol::~Symbol() {}
-
-Symbol::Symbol(std::string value) {
-  this->type = "symbol";
-  this->set_value(value);
-}
-
 namespace mathgraph::algebra {
-  Symbol_ptr undefined_symbol(new Symbol("undefined__"));
+  const string& Symbol::get() {
+    return this->value;
+  }
+
+  ostream& Symbol::output_to_stream(ostream& os) {
+    return os << this->value;
+  }
+
+  Symbol::Symbol(string value) : value{ value } {}
+
+  shared_ptr<Expression> Symbol::construct(string value) {
+    return shared_ptr<Expression>(new Symbol(value));
+  }
 }

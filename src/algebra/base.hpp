@@ -2,6 +2,6 @@
 
 namespace mathgraph {
   namespace algebra {
-    typedef double approximate_t;
+    typedef double approx_t;
   }
 }
