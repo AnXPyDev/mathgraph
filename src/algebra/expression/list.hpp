@@ -17,6 +17,6 @@ class mathgraph::algebra::expression::List : public expression::Expression {
 private:
   std::vector<expression::Expression_ptr> elements;
 public:
-  value::Value_ptr get_value(Enviroment_ptr env = undefined_enviroment);
+  value::Value_ptr evaluate(Enviroment_ptr env = undefined_enviroment);
   List(std::vector<expression::Expression_ptr> elements = {});
 };

@@ -19,7 +19,7 @@ private:
   Value* value;
 public:
   std::string type;
-  Value* get_value();
+  Value* evaluate();
   virtual void update_value();
   void update();
   void add_member(Expression* member);

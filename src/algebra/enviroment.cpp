@@ -9,16 +9,16 @@
 
 using namespace mathgraph::algebra;
 
-void Enviroment::set_value(Symbol_ptr symbol, expression::Expression_ptr expression) {
+void Enviroment::set(Symbol_ptr symbol, expression::Expression_ptr expression) {
   this->symbol_map[symbol->get_value()] = expression;
 }
 
-expression::Expression_ptr Enviroment::get_value(Symbol_ptr symbol) {
+expression::Expression_ptr Enviroment::get(Symbol_ptr symbol) {
   if (this->symbol_map.find(symbol->get_value()) != this->symbol_map.end()) {
     return this->symbol_map[symbol->get_value()];
   }
   if (this->parent != NULL) {
-    return this->parent->get_value(symbol);
+    return this->parent->get(symbol);
   }
   return expression::undefined_expression;
 }

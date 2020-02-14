@@ -15,7 +15,7 @@ expression::Expression_ptr expression::Expression::get_expression(Enviroment_ptr
   return expression::Expression_ptr(this);
 }
 
-value::Value_ptr expression::Expression::get_value(Enviroment_ptr env) {
+value::Value_ptr expression::Expression::evaluate(Enviroment_ptr env) {
   return value::undefined_value;
 }
 

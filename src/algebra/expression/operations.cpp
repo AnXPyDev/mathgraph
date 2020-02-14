@@ -13,67 +13,67 @@ expression::Operation::Operation(expression::Expression_ptr expr_a, expression::
   this->expr_b = expr_b;
 }
 
-value::Value_ptr expression::operations::Add::get_value(Enviroment_ptr env) {
-  return value::operations::add(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Add::evaluate(Enviroment_ptr env) {
+  return value::operations::add(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Subtract::get_value(Enviroment_ptr env) {
-  return value::operations::subtract(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Subtract::evaluate(Enviroment_ptr env) {
+  return value::operations::subtract(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Multiply::get_value(Enviroment_ptr env) {
-  return value::operations::multiply(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Multiply::evaluate(Enviroment_ptr env) {
+  return value::operations::multiply(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Divide::get_value(Enviroment_ptr env) {
-  return value::operations::divide(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Divide::evaluate(Enviroment_ptr env) {
+  return value::operations::divide(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Modulus::get_value(Enviroment_ptr env) {
-  return value::operations::modulus(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Modulus::evaluate(Enviroment_ptr env) {
+  return value::operations::modulus(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Power::get_value(Enviroment_ptr env) {
-  return value::operations::power(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Power::evaluate(Enviroment_ptr env) {
+  return value::operations::power(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Root::get_value(Enviroment_ptr env) {
-  return value::operations::root(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Root::evaluate(Enviroment_ptr env) {
+  return value::operations::root(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Logarithm::get_value(Enviroment_ptr env) {
-  return value::operations::logarithm(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Logarithm::evaluate(Enviroment_ptr env) {
+  return value::operations::logarithm(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::And::get_value(Enviroment_ptr env) {
-  return value::operations::conjunction(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::And::evaluate(Enviroment_ptr env) {
+  return value::operations::conjunction(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Or::get_value(Enviroment_ptr env) {
-  return value::operations::disjunction(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Or::evaluate(Enviroment_ptr env) {
+  return value::operations::disjunction(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Equal::get_value(Enviroment_ptr env) {
-  return value::operations::equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Equal::evaluate(Enviroment_ptr env) {
+  return value::operations::equal(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Less::get_value(Enviroment_ptr env) {
-  return value::operations::less(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Less::evaluate(Enviroment_ptr env) {
+  return value::operations::less(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::More::get_value(Enviroment_ptr env) {
-  return value::operations::more(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::More::evaluate(Enviroment_ptr env) {
+  return value::operations::more(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
-value::Value_ptr expression::operations::Less_or_equal::get_value(Enviroment_ptr env) {
-  return value::operations::less_or_equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
-}
-
-value::Value_ptr expression::operations::More_or_equal::get_value(Enviroment_ptr env) {
-  return value::operations::more_or_equal(this->expr_a->get_value(env), this->expr_b->get_value(env));
+value::Value_ptr expression::operations::Less_or_equal::evaluate(Enviroment_ptr env) {
+  return value::operations::less_or_equal(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
 }
 
-value::Value_ptr expression::operations::Negate::get_value(Enviroment_ptr env) {
-  return value::operations::negate(this->get_expression(env)->get_value(env));
+value::Value_ptr expression::operations::More_or_equal::evaluate(Enviroment_ptr env) {
+  return value::operations::more_or_equal(this->expr_a->evaluate(env), this->expr_b->evaluate(env));
+}
+
+value::Value_ptr expression::operations::Negate::evaluate(Enviroment_ptr env) {
+  return value::operations::negate(this->get_expression(env)->evaluate(env));
 }
 
 expression::Expression_ptr expression::operations::Negate::get_expression(Enviroment_ptr env, expression::Expression_ptr caller) {
@@ -100,7 +100,7 @@ value::Value_ptr if_then_else(value::Value_ptr condition, expression::Expression
     if (boolean_condition) {
       ret_expr = case_true;
     }
-    value::Value_ptr ret = ret_expr->get_value(env);
+    value::Value_ptr ret = ret_expr->evaluate(env);
     if (ret != value::undefined_value) {
       return ret;
     }
@@ -108,8 +108,8 @@ value::Value_ptr if_then_else(value::Value_ptr condition, expression::Expression
   }
 }
 
-value::Value_ptr expression::operations::If::get_value(Enviroment_ptr env) {
-  return if_then_else(this->condition->get_value(env), this->case_true, this->case_false, env);
+value::Value_ptr expression::operations::If::evaluate(Enviroment_ptr env) {
+  return if_then_else(this->condition->evaluate(env), this->case_true, this->case_false, env);
 }
 
 expression::operations::If::If(expression::Expression_ptr condition, expression::Expression_ptr case_true, expression::Expression_ptr case_false) {

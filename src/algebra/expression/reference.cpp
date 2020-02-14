@@ -14,9 +14,9 @@ expression::Reference::Reference(Symbol_ptr symbol) {
 }
 
 expression::Expression_ptr expression::Reference::get_expression(Enviroment_ptr env, Expression_ptr caller) {
-  return env->get_value(this->symbol);
+  return env->get(this->symbol);
 }
 
-value::Value_ptr expression::Reference::get_value(Enviroment_ptr env) {
-  return this->get_expression(env)->get_value(env);
+value::Value_ptr expression::Reference::evaluate(Enviroment_ptr env) {
+  return this->get_expression(env)->evaluate(env);
 }

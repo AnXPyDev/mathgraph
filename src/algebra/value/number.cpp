@@ -2,7 +2,7 @@
 
 using namespace mathgraph::algebra;
 
-const approximate_t &value::Number::get_value() {
+const approximate_t &value::Number::evaluate() {
   return this->value;
 }
 

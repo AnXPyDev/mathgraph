@@ -2,7 +2,7 @@
 
 using namespace mathgraph::algebra;
 
-const bool &value::Bool::get_value() {
+const bool &value::Bool::evaluate() {
   return this->value;
 }
 

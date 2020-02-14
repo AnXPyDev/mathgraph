@@ -23,8 +23,8 @@ private:
   std::map<std::string, expression::Expression_ptr> symbol_map;
   Enviroment_ptr parent;
 public:
-  void set_value(Symbol_ptr symbol, expression::Expression_ptr expression);
-  expression::Expression_ptr get_value(Symbol_ptr symbol);
+  void set(Symbol_ptr symbol, expression::Expression_ptr expression);
+  expression::Expression_ptr get(Symbol_ptr symbol);
   void set_parent(Enviroment_ptr parent);
   Enviroment_ptr get_parent();
   ~Enviroment();

@@ -12,7 +12,7 @@ class mathgraph::algebra::value::Bool : public value::Value {
 private:
   bool value;
 public:
-  const bool &get_value();
+  const bool &evaluate();
   void set_value(bool value);
   ~Bool();
   Bool(bool value = true);

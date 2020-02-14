@@ -9,6 +9,6 @@ expression::Constant::Constant(value::Value_ptr value) {
   this->value = value;
 }
 
-value::Value_ptr expression::Constant::get_value(Enviroment_ptr env) {
+value::Value_ptr expression::Constant::evaluate(Enviroment_ptr env) {
   return this->value;
 }

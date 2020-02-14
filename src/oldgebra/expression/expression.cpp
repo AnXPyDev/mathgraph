@@ -4,7 +4,7 @@
 
 using namespace mathgraph::algebra;
 
-Value* Expression::get_value() {
+Value* Expression::evaluate() {
   return this->value;
 }
 

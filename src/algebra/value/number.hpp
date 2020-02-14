@@ -13,7 +13,7 @@ class mathgraph::algebra::value::Number : public value::Value {
 private:
   approximate_t value;
 public:
-  const approximate_t &get_value();
+  const approximate_t &evaluate();
   void set_value(approximate_t value);
   ~Number();
   Number(approximate_t value = 0);

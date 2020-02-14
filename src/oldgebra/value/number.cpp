@@ -12,6 +12,6 @@ void Number::set_value(approximate_t value) {
   this->value = value;
 }
 
-const approximate_t &Number::get_value() {
+const approximate_t &Number::evaluate() {
   return this->value;
 }

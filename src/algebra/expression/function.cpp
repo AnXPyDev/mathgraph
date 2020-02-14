@@ -15,8 +15,8 @@ void expression::Function::set_argument_list(std::vector<Symbol_ptr> argument_li
   this->argument_list = argument_list;
 }
 
-value::Value_ptr expression::Function::get_value(Enviroment_ptr env) {
-  return this->get_expression(env)->get_value(env);
+value::Value_ptr expression::Function::evaluate(Enviroment_ptr env) {
+  return this->get_expression(env)->evaluate(env);
 }
 
 expression::Expression_ptr expression::Function::get_expression(Enviroment_ptr env, Expression_ptr caller) {

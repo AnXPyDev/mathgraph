@@ -14,7 +14,7 @@ using namespace mathgraph::algebra;
 
 bool value::operations::to_boolean(value::Value_ptr a) {
   if (a->type == "value::bool") {
-    return (dynamic_cast<value::Bool*>(a.get()))->get_value();
+    return (dynamic_cast<value::Bool*>(a.get()))->evaluate();
   } else if (a->type == "value::number") {
     return true;
   }
@@ -23,13 +23,13 @@ bool value::operations::to_boolean(value::Value_ptr a) {
 
 value::Value_ptr numerical_operation(value::Value_ptr a, value::Value_ptr b, approximate_t (*operation)(approximate_t, approximate_t)) {
   if (a->type == "value::bool") {
-    a = value::Value_ptr(new value::Number(dynamic_cast<value::Bool*>(a.get())->get_value() ? 1 : 0));
+    a = value::Value_ptr(new value::Number(dynamic_cast<value::Bool*>(a.get())->evaluate() ? 1 : 0));
   }
   if (b->type == "value::bool") {
-    b = value::Value_ptr(new value::Number(dynamic_cast<value::Bool*>(b.get())->get_value() ? 1 : 0));
+    b = value::Value_ptr(new value::Number(dynamic_cast<value::Bool*>(b.get())->evaluate() ? 1 : 0));
   }
   if (a->type == "value::number" && b->type == "value::number") {
-    return value::Value_ptr(new Number(operation((dynamic_cast<value::Number*>(a.get()))->get_value(), (dynamic_cast<value::Number*>(b.get()))->get_value())));
+    return value::Value_ptr(new Number(operation((dynamic_cast<value::Number*>(a.get()))->evaluate(), (dynamic_cast<value::Number*>(b.get()))->evaluate())));
   } else if (a->type == "value::list" || b->type == "value::list") {
     std::vector<value::Value_ptr> new_list_elements;
     value::List* list; value::Value_ptr other;
@@ -51,7 +51,7 @@ value::Value_ptr numerical_operation(value::Value_ptr a, value::Value_ptr b, app
 
 value::Value_ptr boolean_operation(value::Value_ptr a, value::Value_ptr b, bool (*operation)(approximate_t, approximate_t)) {
   if (a->type == "value::number" && b->type == "value::number") {
-    return value::Value_ptr(new value::Bool(operation((dynamic_cast<value::Number*>(a.get()))->get_value(), (dynamic_cast<value::Number*>(b.get()))->get_value())));
+    return value::Value_ptr(new value::Bool(operation((dynamic_cast<value::Number*>(a.get()))->evaluate(), (dynamic_cast<value::Number*>(b.get()))->evaluate())));
   } else if (a->type == "value::list" || b->type == "value::list") {
     std::vector<value::Value_ptr> new_list_elements;
     List* list; Value_ptr other;
@@ -94,7 +94,7 @@ value::Value_ptr binary_operation(value::Value_ptr a, value::Value_ptr b, bool (
 
 std::ostream& value::operations::output_to_stream(std::ostream& stream, value::Value_ptr a) {
   if (a->type == "value::number") {
-    stream << (dynamic_cast<value::Number*>(a.get()))->get_value();
+    stream << (dynamic_cast<value::Number*>(a.get()))->evaluate();
   } else if (a->type == "value::list") {
     stream << "{";
     auto elements = (dynamic_cast<value::List*>(a.get()))->get_elements();
@@ -106,7 +106,7 @@ std::ostream& value::operations::output_to_stream(std::ostream& stream, value::V
     }
     stream << "}";
   } else if (a->type == "value::bool") {
-    stream << ((dynamic_cast<value::Bool*>(a.get()))->get_value() ? "True" : "False");
+    stream << ((dynamic_cast<value::Bool*>(a.get()))->evaluate() ? "True" : "False");
   } else {
     stream << "undefined";
   }
