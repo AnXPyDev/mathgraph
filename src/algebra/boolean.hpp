@@ -10,12 +10,10 @@
 using namespace std;
 
 namespace mathgraph::algebra {
-  struct Scope;
   struct Boolean : public Expression {
   private:
     bool value;
   public:
-    const string type = "boolean";
     const bool& get();
     ostream& output_to_stream(ostream& os);
     Boolean(bool value);

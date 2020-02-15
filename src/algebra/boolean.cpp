@@ -9,7 +9,9 @@ namespace mathgraph::algebra {
     return os << (this->value ? "true" : "false");
   }
 
-  Boolean::Boolean(bool value) : value{ value } {}
+  Boolean::Boolean(bool value) : value{ value } {
+    this->type = "boolean";
+  }
 
   shared_ptr<Expression> Boolean::construct(bool value) {
     if (value) {

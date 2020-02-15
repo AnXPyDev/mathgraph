@@ -9,9 +9,20 @@ namespace mathgraph::algebra {
     return os << this->value;
   }
 
-  Symbol::Symbol(string value) : value{ value } {}
+  shared_ptr<Expression> Symbol::evaluate(shared_ptr<Scope> scope, shared_ptr<Expression> caller) {
+    auto ret = scope->get(this->value);
+    if (ret->get_type() == "undefined") {
+      return caller;
+    }
+    return ret;
+  }
+
+  Symbol::Symbol(string value) : value{ value } {
+    this->type = "symbol";
+  }
 
   shared_ptr<Expression> Symbol::construct(string value) {
-    return shared_ptr<Expression>(new Symbol(value));
+    shared_ptr<Expression> temp = shared_ptr<Expression>(new Symbol(value));
+    return temp->evaluate(temp);
   }
 }

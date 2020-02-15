@@ -4,3 +4,11 @@
 #include "algebra/symbol.hpp"
 #include "algebra/number.hpp"
 #include "algebra/boolean.hpp"
+#include "algebra/list.hpp"
+#include "algebra/addition.hpp"
+#include "algebra/multiplication.hpp"
+#include "algebra/inversion.hpp"
+#include "algebra/negation.hpp"
+#include "algebra/exponentiation.hpp"
+
+#include "algebra/operations.hpp"

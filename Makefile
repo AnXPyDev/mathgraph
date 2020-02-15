@@ -7,7 +7,7 @@ NAME=mathgraph
 CC=g++
 MAINFLAGS=
 OBJECTFLAGS=
-OBJECTS=src/main src/algebra/expression src/algebra/symbol src/algebra/number src/algebra/boolean
+OBJECTS=src/main src/algebra/scope src/algebra/expression src/algebra/symbol src/algebra/number src/algebra/boolean src/algebra/list src/algebra/addition src/algebra/inversion src/algebra/negation src/algebra/multiplication src/algebra/operations/compare src/algebra/exponentiation
 
 main: objects
 	@$(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(object).o)

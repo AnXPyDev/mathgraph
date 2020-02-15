@@ -9,7 +9,9 @@ namespace mathgraph::algebra {
     return os << this->value;
   }
 
-  Number::Number(approx_t value) : value{ value } {}
+  Number::Number(approx_t value) : value{ value } {
+    this->type = "number";
+  }
 
   shared_ptr<Expression> Number::construct(approx_t value) {
     return shared_ptr<Expression>(new Number(value));
