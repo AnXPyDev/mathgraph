@@ -1,174 +1,149 @@
+#include <iostream>
+#include <memory>
 #include <vector>
 
+#include "base.hpp"
+#include "expression.hpp"
 #include "number.hpp"
-#include "negation.hpp"
-#include "operations.hpp"
+#include "fraction.hpp"
 #include "list.hpp"
-#include "inversion.hpp"
-#include "exponentiation.hpp"
 #include "multiplication.hpp"
+#include "operations.hpp"
 #include "addition.hpp"
 
-using namespace std;
-
 namespace mathgraph::algebra {
-  ostream& Addition::output_to_stream(ostream& os) {
-    os << "(";
-    for (auto it = this->elements.begin(); it < this->elements.end() - 1; ++it) {
-      os << *it << " + ";
+  ostream& Addition::output_to_stream(ostream& stream) {
+    stream << "(";
+    for (auto it = this->_elements.begin(); it < this->_elements.end() -1; ++it) {
+      stream << *it << " + ";
     }
-    if (this->elements.size() > 0) {
-      os << *(this->elements.end() - 1);
-    }
-    os << ")";
-    return os;
+    return stream << *(this->_elements.end() - 1) << ")";
   }
-
-  shared_ptr<Expression> Addition::evaluate(shared_ptr<Scope> scope, shared_ptr<Expression> caller) {
-    return Addition::evaluate(this->elements, scope);
+  shared_ptr<Expression> Addition::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return Addition::_evaluate(this->_elements, scope);
   }
-
   Addition::Addition(vector<shared_ptr<Expression>> elements) : List(elements) {
-    this->type = "addition";
+    this->_type = "addition";
   }
-
   shared_ptr<Expression> Addition::construct(vector<shared_ptr<Expression>> elements) {
-    return Addition::evaluate(elements);
+    return Addition::_reduce(elements);
   }
+  shared_ptr<Expression> Addition::_reduce(vector<shared_ptr<Expression>> elements) {
+    if (elements.size() == 1) {
+      return elements[0];
+    } else if (elements.size() == 0) {
+      return undefined;
+    }
 
-  shared_ptr<Expression> Addition::evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
     {
-      vector<shared_ptr<Expression>> evaluated_elements;
+      // If an element is an addition join it's elements to this one's
+      vector<shared_ptr<Expression>> reduced_elements;
       for (auto element : elements) {
-        element = element->evaluate(scope, element);
-        if (element->get_type() == "addition") {
-          for (auto sub_element : dynamic_cast<List*>(element.get())->get()) {
-            evaluated_elements.push_back(sub_element);
+        if (element->type() == "addition") {
+          for (auto sub_element : dynamic_cast<Addition*>(element.get())->elements()) {
+            reduced_elements.push_back(sub_element);
           }
         } else {
-          evaluated_elements.push_back(element->evaluate(scope, element));
+          reduced_elements.push_back(element);
         }
       }
-      elements = evaluated_elements;
+      elements = reduced_elements;
     }
 
-    approx_t known_sum = 0;
-
+    shared_ptr<Expression> known_sum = Number::construct(0);
     {
-      vector<shared_ptr<Expression>> simplified_elements;
-      for (auto element : elements) {
-        if (element->get_type() == "number") {
-          known_sum += dynamic_cast<Number*>(element.get())->get();
-        } else {
-          simplified_elements.push_back(element);
+      for (auto it = elements.begin(); it < elements.end(); ++it) {
+        if ((*it)->dependencies().size() == 0 && (*it)->type() != "list") {
+          known_sum = operations::add(known_sum, *it);
+          elements.erase(it--);
         }
       }
-      elements = simplified_elements;
     }
 
     {
-      vector<shared_ptr<Expression>> simplified_elements;
-      for (auto a = elements.begin(); a < elements.end(); ++a) {
-        approx_t mul = 1;
-        for (auto b = elements.begin(); b < elements.end(); ++b) {
-          bool match = false;
-          if (a != b) {
-            if (operations::equal(*a, *b)) {
-              ++mul;
-              match = true;
-            } else if (operations::equal(Negation::construct(*a), *b)) {
-              --mul;
-              match = true;
-            }
-          }
-          if (match) {
-            elements.erase(b--);
-          }
-        }
-        simplified_elements.push_back(Multiplication::construct({*a, Number::construct(mul)}));
-        elements.erase(a--);
-      }
-      elements = simplified_elements;
-    }
-
-    {
-      vector<shared_ptr<Expression>> simplified_elements;
-      for (auto a = elements.begin(); a < elements.end(); ++a) {
-        auto expr_a = *a;
-        shared_ptr<Expression> unknown;
+      vector<shared_ptr<Expression>> reduced_elements;
+      for (auto a_it = elements.begin(); a_it < elements.end(); ++a_it) {
+        shared_ptr<Expression> base;
         shared_ptr<Expression> multiplier;
-
-        if (expr_a->get_type() == "multiplication") {
-          auto temp = dynamic_cast<Multiplication*>(expr_a.get());
-          unknown = temp->get_unknown();
-          multiplier = temp->get_multiplier();
-        } else if (expr_a->get_type() == "negation") {
-          auto temp = dynamic_cast<Negation*>(expr_a.get());
-          unknown = temp->get();
-          multiplier = Number::construct(-1);
+        if (*a_it == "multiplication") {
+          auto mult = dynamic_cast<Multiplication*>((*a_it).get());
+          base = Multiplication::construct(mult->unknown());
+          multiplier = mult->known();
         } else {
-          unknown = expr_a;
+          base = *a_it;
           multiplier = Number::construct(1);
         }
-
-        for (auto b = elements.begin(); b < elements.end(); ++b) {
-          if (a == b) {
+        for (auto b_it = elements.begin(); b_it < elements.end(); ++b_it) {
+          if (a_it == b_it) {
             continue;
           }
-          
-          auto expr_b = *b;
-          shared_ptr<Expression> b_unknown;
-          shared_ptr<Expression> b_multiplier;
-
-          if (expr_b->get_type() == "multiplication") {
-            auto temp = dynamic_cast<Multiplication*>(expr_b.get());
-            b_unknown = temp->get_unknown();
-            b_multiplier = temp->get_multiplier();
-          } else if (expr_b->get_type() == "negation") {
-            auto temp = dynamic_cast<Negation*>(expr_b.get());
-            b_unknown = temp->get();
-            b_multiplier = Number::construct(-1);
-          } else {
-            b_unknown = expr_b;
-            b_multiplier = Number::construct(1);
-          }       
-
-          if (operations::equal(unknown, b_unknown)) {
-            multiplier = Addition::construct({multiplier, b_multiplier});
-            elements.erase(b--);
+          if (*b_it == "multiplication") {
+            auto mult = dynamic_cast<Multiplication*>((*b_it).get());
+            if (Multiplication::construct(mult->unknown()) == base) {
+              multiplier = Addition::construct({multiplier, mult->known()});
+              elements.erase(b_it--);
+            }
+          } else if (*b_it == base) {
+            multiplier = Addition::construct({multiplier, Number::construct(1)});
+            elements.erase(b_it--);
           }
-          
         }
-        simplified_elements.push_back(Multiplication::construct({unknown, multiplier}));
-        elements.erase(a--);
+        reduced_elements.push_back(Multiplication::construct({multiplier, base}));
+        elements.erase(a_it--);
       }
-      elements = simplified_elements;
+      elements = reduced_elements;
     }
 
-    if (known_sum != 0 || elements.size() == 0) {
-      elements.push_back(Number::construct(known_sum));
+    if (!(known_sum == Number::construct(0)) || elements.size() == 0) {
+      elements.push_back(known_sum);
     }
 
-    if (elements.size() == 0) {
-      return undefined;
-    } else if (elements.size() == 1) {
+    if (elements.size() == 1) {
       return elements[0];
     }
 
-    for (int i = 0; i < elements.size(); ++i) {
-      auto element = elements[i];
-      if (element->get_type() == "list") {
-        auto list_elements = dynamic_cast<List*>(element.get())->get();
-        vector<shared_ptr<Expression>> new_list_elements;
-        for (auto list_element : list_elements) {
-          auto addition_elements = elements;
-          addition_elements[i] = list_element;
-          new_list_elements.push_back(Addition::construct(addition_elements));
+    {
+      for (int i = 0; i < elements.size(); ++i) {
+        auto element = elements[i];
+        if (element == "list") {
+          vector<shared_ptr<Expression>> new_list_elements;
+          auto list_elements = dynamic_cast<List*>(element.get())->elements();
+          for (int e = 0; e < list_elements.size(); ++e) {
+            auto addition_elements = elements;
+            addition_elements[i] = list_elements[e];
+            new_list_elements.push_back(Addition::construct(addition_elements));
+          }
+          return List::construct(new_list_elements);
         }
-        return List::construct(new_list_elements);
       }
     }
 
-    return shared_ptr<Expression>(new Addition(elements));
+    vector<shared_ptr<Expression>> denominator_elements = {Number::construct(1)};
+
+    for (auto element : elements) {
+      if (element == "fraction") {
+        auto frac = dynamic_cast<Fraction*>(element.get());
+        denominator_elements.push_back(frac->denominator());
+      }
+    }
+
+    shared_ptr<Expression> denominator = Multiplication::construct(denominator_elements);
+
+    if (denominator == Number::construct(1)) {
+      return shared_ptr<Expression>(new Addition(elements));
+    }
+    
+    vector<shared_ptr<Expression>> numerator_elements;
+
+    for (auto element : elements) {
+      numerator_elements.push_back(Multiplication::construct({element, denominator}));
+    }
+
+    shared_ptr<Expression> numerator = Addition::construct(numerator_elements);
+
+    return Fraction::construct(numerator, denominator);
+  }
+  shared_ptr<Expression> Addition::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
+    return undefined;
   }
 }

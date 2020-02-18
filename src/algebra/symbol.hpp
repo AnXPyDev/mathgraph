@@ -1,24 +1,29 @@
+// symbol is an expression with no certain value until evaluated in a scope
+// it represents a variable or function's name with a string
+
 #pragma once
 
-#include <memory>
-#include <string>
 #include <iostream>
+#include <string>
+#include <memory>
+#include <vector>
 
 #include "base.hpp"
-#include "scope.hpp"
 #include "expression.hpp"
 
 using namespace std;
 
 namespace mathgraph::algebra {
   struct Symbol : public Expression {
-  private:
-    string value;
-  public:
-    const string& get();
-    ostream& output_to_stream(ostream& os);
-    shared_ptr<Expression> evaluate(shared_ptr<Scope> scope = empty_scope, shared_ptr<Expression> caller = undefined);
+    ostream& output_to_stream(ostream& stream);
+    shared_ptr<Expression> evaluate(shared_ptr<Expression> caller = undefined, shared_ptr<Scope> scope = empty_scope);
+    vector<shared_ptr<Expression>> dependencies(shared_ptr<Expression> caller = undefined);
+    // getter for _value
+    const string& value();
     Symbol(string value);
-    static shared_ptr<Expression> construct(string value = "");
+    // constructs a new symbol as a shared pointer to Expression
+    static shared_ptr<Expression> construct(string value = "nil");
+  private:
+    string _value;
   };
 }

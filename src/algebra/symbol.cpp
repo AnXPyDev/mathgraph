@@ -1,28 +1,30 @@
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <string>
+
+#include "base.hpp"
+#include "expression.hpp"
 #include "symbol.hpp"
 
+using namespace std;
+
 namespace mathgraph::algebra {
-  const string& Symbol::get() {
-    return this->value;
+  ostream& Symbol::output_to_stream(ostream& stream) { return stream << this->_value; }
+  shared_ptr<Expression> Symbol::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    // TODO: implement getting expression from scope
+    return undefined;
   }
-
-  ostream& Symbol::output_to_stream(ostream& os) {
-    return os << this->value;
+  vector<shared_ptr<Expression>> Symbol::dependencies(shared_ptr<Expression> caller) {
+    return {caller};
   }
-
-  shared_ptr<Expression> Symbol::evaluate(shared_ptr<Scope> scope, shared_ptr<Expression> caller) {
-    auto ret = scope->get(this->value);
-    if (ret->get_type() == "undefined") {
-      return caller;
-    }
-    return ret;
+  const string& Symbol::value() {
+    return this->_value;
   }
-
-  Symbol::Symbol(string value) : value{ value } {
-    this->type = "symbol";
+  Symbol::Symbol(string value) : _value{ value } {
+    this->_type = "symbol";
   }
-
   shared_ptr<Expression> Symbol::construct(string value) {
-    shared_ptr<Expression> temp = shared_ptr<Expression>(new Symbol(value));
-    return temp->evaluate(temp);
+    return shared_ptr<Expression>(new Symbol(value));
   }
 }

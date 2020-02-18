@@ -1,2 +1,5 @@
 #include "operations/base.hpp"
-#include "operations/compare.hpp"
+#include "operations/equal.hpp"
+#include "operations/add.hpp"
+#include "operations/multiply.hpp"
+#include "operations/gcd.hpp"

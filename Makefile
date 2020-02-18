@@ -7,7 +7,8 @@ NAME=mathgraph
 CC=g++
 MAINFLAGS=
 OBJECTFLAGS=
-OBJECTS=src/main src/algebra/scope src/algebra/expression src/algebra/symbol src/algebra/number src/algebra/boolean src/algebra/list src/algebra/addition src/algebra/inversion src/algebra/negation src/algebra/multiplication src/algebra/operations/compare src/algebra/exponentiation
+DIFF_FOLDER=temp
+OBJECTS=src/main src/algebra/expression src/algebra/symbol src/algebra/number src/algebra/fraction src/algebra/exponentiation src/algebra/list src/algebra/addition src/algebra/multiplication src/algebra/operations/equal src/algebra/operations/add src/algebra/operations/multiply src/algebra/operations/gcd
 
 main: objects
 	@$(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(object).o)
@@ -15,8 +16,6 @@ main: objects
 
 objects:
 	$(foreach object,$(OBJECTS),@[ ! -f $(object).o ] && echo "Compiling to object: $(object).cpp" && $(CC) -c $(OBJECTFLAGS) $(object).cpp -o $(object).o || echo "Skipping compilation: $(object).cpp"${\n})
-
-smart_objects:
 
 clean:
 	$(foreach object,$(OBJECTS),@rm -f "$(object).o" && echo "Removed object: $(object).o" || "Failed to remove object: $(object).o"${\n})

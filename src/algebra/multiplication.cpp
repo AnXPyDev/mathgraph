@@ -1,175 +1,163 @@
-#include <vector>
 #include <iostream>
+#include <memory>
 
-#include "operations.hpp"
+#include "base.hpp"
+#include "expression.hpp"
 #include "number.hpp"
-#include "list.hpp"
-#include "inversion.hpp"
-#include "addition.hpp"
+#include "fraction.hpp"
 #include "exponentiation.hpp"
+#include "list.hpp"
+#include "operations.hpp"
+#include "addition.hpp"
 #include "multiplication.hpp"
 
-using namespace std;
-
 namespace mathgraph::algebra {
-  ostream& Multiplication::output_to_stream(ostream& os) {
-    os << "(";
-    for (auto it = this->elements.begin(); it < this->elements.end() - 1; ++it) {
-      os << *it << " * ";
+  ostream& Multiplication::output_to_stream(ostream& stream) {
+    stream << "(";
+    for (auto it = this->_elements.begin(); it < this->_elements.end() -1; ++it) {
+      stream << *it << " * ";
     }
-    if (this->elements.size() > 0) {
-      os << *(this->elements.end() - 1);
-    }
-    os << ")";
-    return os;
+    return stream << *(this->_elements.end() - 1) << ")";
   }
-
-  shared_ptr<Expression> Multiplication::evaluate(shared_ptr<Scope> scope, shared_ptr<Expression> caller) {
-    return Multiplication::evaluate(this->elements, scope);
+  shared_ptr<Expression> Multiplication::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return Multiplication::_evaluate(this->_elements, scope);
   }
-
-  shared_ptr<Expression> Multiplication::get_multiplier() {
-    for (auto it = this->elements.begin(); it < this->elements.end(); ++it) {
-      if ((*it)->get_type() == "number") {
-        return *it;
+  shared_ptr<Expression> Multiplication::known() {
+    for (auto element : this->_elements) {
+      if ((element->type() == "number" || element->type() == "fraction") && element->dependencies().size() == 0) {
+        return element;
       }
     }
     return Number::construct(1);
   }
-
-  shared_ptr<Expression> Multiplication::get_unknown() {
-    auto new_elements = this->elements;
-    for (auto it = new_elements.begin(); it < new_elements.end(); ++it) {
-      if ((*it)->get_type() == "number") {
-        new_elements.erase(it--);
+  vector<shared_ptr<Expression>> Multiplication::unknown() {
+    auto known = this->known();
+    auto result = this->_elements;
+    for (auto it = result.begin(); it < result.end(); ++it) {
+      if (*it == known) {
+        result.erase(it--);
+        break;
       }
     }
-    return List::construct(new_elements);
+    return result;
   }
-
   Multiplication::Multiplication(vector<shared_ptr<Expression>> elements) : List(elements) {
-    this->type = "multiplication";
+    this->_type = "multiplication";
   }
-
   shared_ptr<Expression> Multiplication::construct(vector<shared_ptr<Expression>> elements) {
-    return Multiplication::evaluate(elements);
+    return Multiplication::_reduce(elements);
   }
+  shared_ptr<Expression> Multiplication::_reduce(vector<shared_ptr<Expression>> elements) {
+    if (elements.size() == 1) {
+      return elements[0];
+    } else if (elements.size() == 0) {
+      return undefined;
+    }
 
-  shared_ptr<Expression> Multiplication::evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
     {
-      vector<shared_ptr<Expression>> evaluated_elements;
+      // If an element is a multiplication join it's elements to this one's
+      vector<shared_ptr<Expression>> reduced_elements;
       for (auto element : elements) {
-        element = element->evaluate(scope, element);
-        if (element->get_type() == "multiplication") {
-          for (auto sub_element : dynamic_cast<List*>(element.get())->get()) {
-            evaluated_elements.push_back(sub_element);
+        if (element->type() == "multiplication") {
+          for (auto sub_element : dynamic_cast<Multiplication*>(element.get())->elements()) {
+            reduced_elements.push_back(sub_element);
           }
         } else {
-          evaluated_elements.push_back(element->evaluate(scope, element));
+          reduced_elements.push_back(element);
         }
       }
-      elements = evaluated_elements;
+      elements = reduced_elements;
     }
 
-    approx_t known_product = 1;
-
+    shared_ptr<Expression> known_product = Number::construct(1);
     {
-      vector<shared_ptr<Expression>> simplified_elements;
-      for (auto element : elements) {
-        if (element->get_type() == "number") {
-          known_product *= dynamic_cast<Number*>(element.get())->get();
-        } else {
-          simplified_elements.push_back(element);
+      for (auto it = elements.begin(); it < elements.end(); ++it) {
+        if ((*it)->dependencies().size() == 0 && (*it)->type() != "list") {
+          known_product = operations::multiply(known_product, *it);
+          elements.erase(it--);
         }
       }
-      elements = simplified_elements;
-    }
-
-    if (known_product == 0) {
-      return Number::construct(0);
     }
 
     {
-      vector<shared_ptr<Expression>> simplified_elements;
-      for (auto a = elements.begin(); a < elements.end(); ++a) {
-        auto expr_a = *a;
+      vector<shared_ptr<Expression>> reduced_elements;
+      for (auto a_it = elements.begin(); a_it < elements.end(); ++a_it) {
         shared_ptr<Expression> base;
         shared_ptr<Expression> exponent;
-
-        if (expr_a->get_type() == "exponentiation") {
-          auto temp = dynamic_cast<Exponentiation*>(expr_a.get());
-          base = temp->get_base();
-          exponent = temp->get_exponent();
-        } else if (expr_a->get_type() == "inversion") {
-          auto temp = dynamic_cast<Inversion*>(expr_a.get());
-          base = temp->get();
-          exponent = Number::construct(-1);
+        if (*a_it == "exponentiation") {
+          auto exp = dynamic_cast<Exponentiation*>((*a_it).get());
+          base = exp->base();
+          exponent = exp->exponent();
         } else {
-          base = expr_a;
+          base = *a_it;
           exponent = Number::construct(1);
         }
-
-        for (auto b = elements.begin(); b < elements.end(); ++b) {
-          if (a == b) {
+        for (auto b_it = elements.begin(); b_it < elements.end(); ++b_it) {
+          if (a_it == b_it) {
             continue;
           }
-          
-          auto expr_b = *b;
-          shared_ptr<Expression> b_base;
-          shared_ptr<Expression> b_exponent;
-
-          if (expr_b->get_type() == "exponentiation") {
-            auto temp = dynamic_cast<Exponentiation*>(expr_b.get());
-            b_base = temp->get_base();
-            b_exponent = temp->get_exponent();
-          } else if (expr_b->get_type() == "inversion") {
-            auto temp = dynamic_cast<Inversion*>(expr_b.get());
-            b_base = temp->get();
-            b_exponent = Number::construct(-1);
-          } else {
-            b_base = expr_b;
-            b_exponent = Number::construct(1);
-          }       
-
-          if (operations::equal(base, b_base)) {
-            exponent = Addition::construct({exponent, b_exponent});
-            elements.erase(b--);
+          if (*b_it == "exponentiation") {
+            auto exp = dynamic_cast<Exponentiation*>((*b_it).get());
+            if (exp->base() == base) {
+              exponent = Addition::construct({exponent, exp->exponent()});
+              elements.erase(b_it--);
+            }
+          } else if (*b_it == base) {
+            exponent = Addition::construct({exponent, Number::construct(1)});
+            elements.erase(b_it--);
           }
-          
         }
-        simplified_elements.push_back(Exponentiation::construct(base, exponent));
-        elements.erase(a--);
+        reduced_elements.push_back(Exponentiation::construct(base, exponent));
+        elements.erase(a_it--);
       }
-      elements = simplified_elements;
-    }
-    
-    if (known_product != 1 || elements.size() == 0) {
-      elements.push_back(Number::construct(known_product));
+      elements = reduced_elements;
     }
 
-    if (elements.size() == 0) {
-      return undefined;
-    } else if (elements.size() == 1) {
+    if (!(known_product == Number::construct(1)) || elements.size() == 0) {
+      elements.push_back(known_product);
+    }
+
+    if (elements.size() == 1) {
       return elements[0];
     }
 
-    for (int i = 0; i < elements.size(); ++i) {
-      auto element = elements[i];
-      if (element->get_type() == "list" || element->get_type() == "addition") {
-        auto list_elements = dynamic_cast<List*>(element.get())->get();
-        vector<shared_ptr<Expression>> new_list_elements;
-        for (auto list_element : list_elements) {
-          auto multiplication_elements = elements;
-          multiplication_elements[i] = list_element;
-          new_list_elements.push_back(Multiplication::construct(multiplication_elements));
+    {
+      for (int i = 0; i < elements.size(); ++i) {
+        auto element = elements[i];
+        if (element == "list") {
+          vector<shared_ptr<Expression>> new_list_elements;
+          auto list_elements = dynamic_cast<List*>(element.get())->elements();
+          for (int e = 0; e < list_elements.size(); ++e) {
+            auto multiplication = elements;
+            multiplication[i] = list_elements[e];
+            new_list_elements.push_back(Multiplication::construct(multiplication));
+          }
+          return List::construct(new_list_elements);
         }
-        if (element->get_type() == "addition") {
-          return Addition::construct(new_list_elements);
-        }
-        return List::construct(new_list_elements);
       }
     }
 
-    return shared_ptr<Expression>(new Multiplication(elements));
+    vector<shared_ptr<Expression>> numerator;
+    vector<shared_ptr<Expression>> denominator;
+
+    for (auto element : elements) {
+      if (element == "fraction") {
+        auto frac = dynamic_cast<Fraction*>(element.get());
+        numerator.push_back(frac->numerator());
+        denominator.push_back(frac->denominator());
+      } else {
+        numerator.push_back(element);
+      }
+    }
+
+    if (denominator.size() == 0) {
+      return shared_ptr<Expression>(new Multiplication(numerator));
+    }
+
+    return Fraction::construct(shared_ptr<Expression>(new Multiplication(numerator)), shared_ptr<Expression>(new Multiplication(denominator)));
+    
+  }
+  shared_ptr<Expression> Multiplication::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
+    return undefined;
   }
 }

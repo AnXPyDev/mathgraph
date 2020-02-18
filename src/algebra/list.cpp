@@ -1,30 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <memory>
+
+#include "base.hpp"
+#include "expression.hpp"
+#include "operations.hpp"
 #include "list.hpp"
 
+using namespace std;
+
 namespace mathgraph::algebra {
-  const vector<shared_ptr<Expression>>& List::get() {
-    return this->elements;
-  }
-
-  ostream& List::output_to_stream(ostream& os) {
-    os << "{";
-    for (auto it = this->elements.begin(); it < this->elements.end() - 1; ++it) {
-      os << *it << ", ";
+  ostream& List::output_to_stream(ostream& stream) {
+    stream << "{";
+    for (auto it = this->_elements.begin(); it < this->_elements.end() -1; ++it) {
+      stream << *it << ", ";
     }
-    if (this->elements.size() > 0) {
-      os << *(this->elements.end() - 1);
+    return stream << *(this->_elements.end() - 1) << "}";
+  }
+  vector<shared_ptr<Expression>> List::dependencies(shared_ptr<Expression> caller) {
+    vector<shared_ptr<Expression>> result = {};
+    for (auto element : this->_elements) {
+      for (auto dependency : element->dependencies(element)) {
+        // only add unique dependencies
+        bool is_unique = true;
+        for (auto result_element : result) {
+          if (operations::equal(result_element, dependency)) {
+            is_unique = false;
+            break;
+          }
+        }
+        if (is_unique) result.push_back(dependency);
+      }
     }
-    os << "}";
-    return os;
+    return result;
   }
-
-  List::List(vector<shared_ptr<Expression>> elements) : elements{ elements } {
-    this->type = "list";
+  shared_ptr<Expression> List::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return List::_evaluate(this->_elements, scope);
   }
-
+  const vector<shared_ptr<Expression>>& List::elements() {
+    return this->_elements;
+  }
+  List::List(vector<shared_ptr<Expression>> elements) : _elements{ elements } {
+    this->_type = "list";
+  }
   shared_ptr<Expression> List::construct(vector<shared_ptr<Expression>> elements) {
-    if (elements.size() == 1) {
-      return elements[0];
-    }
     return shared_ptr<Expression>(new List(elements));
+  }
+  shared_ptr<Expression> List::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
+    vector<shared_ptr<Expression>> new_list_elements = {};
+    for (auto element : elements) {
+      new_list_elements.push_back(element->evaluate(element, scope));
+    }
+    return List::construct(new_list_elements);
   }
 }
