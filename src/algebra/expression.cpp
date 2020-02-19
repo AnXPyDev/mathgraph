@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "base.hpp"
+#include "scope.hpp"
 #include "operations.hpp"
 #include "expression.hpp"
 
@@ -13,7 +14,7 @@ namespace mathgraph::algebra {
   ostream& Expression::output_to_stream(ostream& stream) {
     return stream << this->_type;
   }
-  shared_ptr<Expression> Expression::reduce(shared_ptr<Expression> caller) { return caller; }
+  shared_ptr<Expression> Expression::reduce(shared_ptr<Expression> caller, shared_ptr<Scope> scope) { return caller; }
   shared_ptr<Expression> Expression::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) { return caller; }
   vector<shared_ptr<Expression>> Expression::dependencies(shared_ptr<Expression> caller) { return {}; }
   const string& Expression::type() { return this->_type; }
@@ -22,6 +23,10 @@ namespace mathgraph::algebra {
   }
 
   shared_ptr<Expression> undefined = shared_ptr<Expression>(new Expression);
+
+  shared_ptr<Expression> Expression::_reduce(shared_ptr<Expression> expr, shared_ptr<Scope> scope) {
+    return expr->reduce(expr, scope);
+  }
 
   ostream& operator<<(ostream& stream, shared_ptr<Expression> expression) {
     return expression->output_to_stream(stream);

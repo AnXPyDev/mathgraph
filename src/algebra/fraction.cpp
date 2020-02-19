@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "base.hpp"
+#include "scope.hpp"
 #include "expression.hpp"
 #include "number.hpp"
 #include "exponentiation.hpp"
@@ -37,8 +38,8 @@ namespace mathgraph::algebra {
     }
     return result;
   }
-  shared_ptr<Expression> Fraction::reduce(shared_ptr<Expression> caller) {
-    return Fraction::_reduce(this->_numerator, this->_denominator);
+  shared_ptr<Expression> Fraction::reduce(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return Fraction::_reduce(this->_numerator, this->_denominator, scope);
   }
   shared_ptr<Expression> Fraction::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
     return Fraction::_evaluate(this->_numerator, this->_denominator, scope);
@@ -46,19 +47,21 @@ namespace mathgraph::algebra {
   Fraction::Fraction(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator) : _numerator{ numerator }, _denominator{ denominator } {
     this->_type = "fraction";
   }
-  shared_ptr<Expression> Fraction::_reduce(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator) {
+  shared_ptr<Expression> Fraction::_reduce(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator, shared_ptr<Scope> scope) {
+    numerator = Expression::_reduce(numerator, scope);
+    denominator = Expression::_reduce(denominator, scope);
     if (numerator == "undefined" || denominator == "undefined") {
       return undefined;
     } else if (numerator == "list") {
       vector<shared_ptr<Expression>> new_list_elements;
       for (auto element : dynamic_cast<List*>(numerator.get())->elements()) {
-        new_list_elements.push_back(Fraction::construct(element, denominator));
+        new_list_elements.push_back(Fraction::_reduce(element, denominator, scope));
       }
       return List::construct(new_list_elements);
     } else if (denominator == "list") {
       vector<shared_ptr<Expression>> new_list_elements;
       for (auto element : dynamic_cast<List*>(denominator.get())->elements()) {
-        new_list_elements.push_back(Fraction::construct(numerator, element));
+        new_list_elements.push_back(Fraction::_reduce(numerator, element, scope));
       }
       return List::construct(new_list_elements);
       
@@ -91,13 +94,11 @@ namespace mathgraph::algebra {
             numerator_rest.erase(n_it--);
             denominator_rest.erase(d_it--);
             break;
-          } else if (false) {
-            
           }
         }
       }
 
-      auto known = Fraction::construct(numerator_known, denominator_known);
+      auto known = Fraction::_reduce(numerator_known, denominator_known, scope);
       if (known == "number") {
         numerator_rest.push_back(known);
       } else if (known == "fraction") {
@@ -107,15 +108,15 @@ namespace mathgraph::algebra {
       }
 
       if (denominator_rest.size() == 0) {
-        return Multiplication::construct(numerator_rest);
+        return Multiplication::_reduce(numerator_rest, scope);
       }
 
       if (numerator_rest.size() == 0) {
         numerator_rest.push_back(Number::construct(1));
       }
 
-      numerator = Multiplication::construct(numerator_rest);
-      denominator = Multiplication::construct(denominator_rest);
+      numerator = Multiplication::_reduce(numerator_rest, scope);
+      denominator = Multiplication::_reduce(denominator_rest, scope);
     } else if (denominator == Number::construct(0)) {
       return undefined;
     } else if (numerator == Number::construct(0) || denominator == Number::construct(1)) {
@@ -136,7 +137,7 @@ namespace mathgraph::algebra {
         }
         ++i;
       }
-      return Fraction::construct(Multiplication::construct({fraction_matrix[0][0], fraction_matrix[1][1]}), Multiplication::construct({fraction_matrix[0][1], fraction_matrix[1][0]}));
+      return Fraction::_reduce(Multiplication::_reduce({fraction_matrix[0][0], fraction_matrix[1][1]}, scope), Multiplication::_reduce({fraction_matrix[0][1], fraction_matrix[1][0]}, scope), scope);
     } else if (numerator == "number" && denominator == "number") {
       whole_t a = dynamic_cast<Number*>(numerator.get())->value();
       whole_t b = dynamic_cast<Number*>(denominator.get())->value();
@@ -176,30 +177,30 @@ namespace mathgraph::algebra {
           if (*b_it == "exponentiation") {
             auto exp = dynamic_cast<Exponentiation*>((*b_it).get());
             if (exp->base() == base) {
-              exponent = Addition::construct({exponent, Multiplication::construct({Number::construct(-1), exp->exponent()})});
+              exponent = Addition::_reduce({exponent, Multiplication::_reduce({Number::construct(-1), exp->exponent()}, scope)}, scope);
               denominator_elements.erase(b_it--);
             }
           } else if (*b_it == base) {
-            exponent = Addition::construct({exponent, Number::construct(-1)});
+            exponent = Addition::_reduce({exponent, Number::construct(-1)}, scope);
             denominator_elements.erase(b_it--);
           }
         }
-        reduced_elements.push_back(Exponentiation::construct(base, exponent));
+        reduced_elements.push_back(Exponentiation::_reduce(base, exponent, scope));
         numerator_elements.erase(a_it--);
       }
       numerator_elements = reduced_elements;
     }
 
     if (denominator_elements.size() == 0) {
-      return Multiplication::construct(numerator_elements);
+      return Multiplication::_reduce(numerator_elements, scope);
     }
 
     if (numerator_elements.size() == 0) {
       numerator_elements.push_back(Number::construct(1));
     }
 
-    numerator = Multiplication::construct(numerator_elements);
-    denominator = Multiplication::construct(denominator_elements);
+    numerator = Multiplication::_reduce(numerator_elements, scope);
+    denominator = Multiplication::_reduce(denominator_elements, scope);
 
     return shared_ptr<Expression>(new Fraction(numerator, denominator));
   }
@@ -208,6 +209,6 @@ namespace mathgraph::algebra {
     return undefined;
   }
   shared_ptr<Expression> Fraction::construct(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator) {
-    return Fraction::_reduce(numerator, denominator);
+    return shared_ptr<Expression>(new Fraction(numerator, denominator));
   }
 }

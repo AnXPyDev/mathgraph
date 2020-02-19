@@ -1,6 +1,7 @@
 #pragma once
 
 #include "algebra/base.hpp"
+#include "algebra/scope.hpp"
 #include "algebra/expression.hpp"
 #include "algebra/symbol.hpp"
 #include "algebra/number.hpp"

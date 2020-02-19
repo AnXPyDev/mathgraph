@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "base.hpp"
+#include "scope.hpp"
 #include "expression.hpp"
 #include "number.hpp"
 #include "fraction.hpp"
@@ -22,13 +23,24 @@ namespace mathgraph::algebra {
   shared_ptr<Expression> Addition::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
     return Addition::_evaluate(this->_elements, scope);
   }
+  shared_ptr<Expression> Addition::reduce(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return Addition::_reduce(this->_elements, scope);
+  }
   Addition::Addition(vector<shared_ptr<Expression>> elements) : List(elements) {
     this->_type = "addition";
   }
   shared_ptr<Expression> Addition::construct(vector<shared_ptr<Expression>> elements) {
-    return Addition::_reduce(elements);
+    return shared_ptr<Expression>(new Addition(elements));
   }
-  shared_ptr<Expression> Addition::_reduce(vector<shared_ptr<Expression>> elements) {
+  shared_ptr<Expression> Addition::_reduce(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
+    {
+      vector<shared_ptr<Expression>> reduced_elements;
+      for (auto element : elements) {
+        reduced_elements.push_back(Expression::_reduce(element, scope));
+      }
+      elements = reduced_elements;
+    }
+
     if (elements.size() == 1) {
       return elements[0];
     } else if (elements.size() == 0) {
@@ -80,15 +92,15 @@ namespace mathgraph::algebra {
           if (*b_it == "multiplication") {
             auto mult = dynamic_cast<Multiplication*>((*b_it).get());
             if (Multiplication::construct(mult->unknown()) == base) {
-              multiplier = Addition::construct({multiplier, mult->known()});
+              multiplier = Addition::_reduce({multiplier, mult->known()}, scope);
               elements.erase(b_it--);
             }
           } else if (*b_it == base) {
-            multiplier = Addition::construct({multiplier, Number::construct(1)});
+            multiplier = Addition::_reduce({multiplier, Number::construct(1)}, scope);
             elements.erase(b_it--);
           }
         }
-        reduced_elements.push_back(Multiplication::construct({multiplier, base}));
+        reduced_elements.push_back(Multiplication::_reduce({multiplier, base}, scope));
         elements.erase(a_it--);
       }
       elements = reduced_elements;
@@ -111,7 +123,7 @@ namespace mathgraph::algebra {
           for (int e = 0; e < list_elements.size(); ++e) {
             auto addition_elements = elements;
             addition_elements[i] = list_elements[e];
-            new_list_elements.push_back(Addition::construct(addition_elements));
+            new_list_elements.push_back(Addition::_reduce(addition_elements, scope));
           }
           return List::construct(new_list_elements);
         }
@@ -127,7 +139,7 @@ namespace mathgraph::algebra {
       }
     }
 
-    shared_ptr<Expression> denominator = Multiplication::construct(denominator_elements);
+    shared_ptr<Expression> denominator = Multiplication::_reduce(denominator_elements, scope);
 
     if (denominator == Number::construct(1)) {
       return shared_ptr<Expression>(new Addition(elements));
@@ -136,12 +148,12 @@ namespace mathgraph::algebra {
     vector<shared_ptr<Expression>> numerator_elements;
 
     for (auto element : elements) {
-      numerator_elements.push_back(Multiplication::construct({element, denominator}));
+      numerator_elements.push_back(Multiplication::_reduce({element, denominator}, scope));
     }
 
-    shared_ptr<Expression> numerator = Addition::construct(numerator_elements);
+    shared_ptr<Expression> numerator = Addition::_reduce(numerator_elements, scope);
 
-    return Fraction::construct(numerator, denominator);
+    return Fraction::_reduce(numerator, denominator, scope);
   }
   shared_ptr<Expression> Addition::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
     return undefined;

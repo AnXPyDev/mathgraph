@@ -14,12 +14,12 @@ namespace mathgraph::algebra {
   struct Number : public Expression {
     ostream& output_to_stream(ostream& stream);
     // getter for _value
-    const whole_t& value();
-    Number(whole_t value);
+    const number_t& value();
+    Number(number_t value);
     // constructs a new number as a shared pointer to expression
     static shared_ptr<Expression> construct(approx_t value = 0);
   private:
     // the value stored in Number
-    whole_t _value;
+    number_t _value;
   };
 }

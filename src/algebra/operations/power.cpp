@@ -1,18 +1,22 @@
 #include <memory>
+#include <cmath>
 
 #include "../base.hpp"
 #include "../expression.hpp"
 #include "../number.hpp"
 #include "../fraction.hpp"
+#include "../exponentiation.hpp"
 #include "../multiplication.hpp"
 #include "base.hpp"
 #include "add.hpp"
 
+using namespace std;
+
 namespace mathgraph::algebra::operations {
-  shared_ptr<Expression> multiply(shared_ptr<Expression> expr_a, shared_ptr<Expression> expr_b) {
+  shared_ptr<Expression> power(shared_ptr<Expression> expr_a, shared_ptr<Expression> expr_b) {
     // If the expressions have dependencies, return a complex Addition
-    if (expr_a->dependencies().size() + expr_b->dependencies().size() != 0) {
-      return Multiplication::_reduce({expr_a, expr_b});
+    if (expr_a->dependencies().size() + expr_b->dependencies().size() != 0 || expr_b == "fraction") {
+      return Exponentiation::_reduce(expr_a, expr_b);
     }
 
     if (expr_a->type() == "undefined" || expr_b->type() == "undefined") {
@@ -32,7 +36,7 @@ namespace mathgraph::algebra::operations {
       }
       ++i;
     }
-    return Fraction::_reduce(Number::construct(fraction_matrix[0][0] * fraction_matrix[1][0]), Number::construct(fraction_matrix[0][1] * fraction_matrix[1][1]));
+    return Fraction::_reduce(Number::construct(pow(fraction_matrix[0][0], fraction_matrix[1][0])), Number::construct(pow(fraction_matrix[0][1], fraction_matrix[1][0])));
   }
 
 }
