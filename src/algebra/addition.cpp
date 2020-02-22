@@ -5,7 +5,8 @@
 #include "base.hpp"
 #include "scope.hpp"
 #include "expression.hpp"
-#include "number.hpp"
+#include "integer.hpp"
+#include "float.hpp"
 #include "fraction.hpp"
 #include "list.hpp"
 #include "multiplication.hpp"
@@ -62,7 +63,7 @@ namespace mathgraph::algebra {
       elements = reduced_elements;
     }
 
-    shared_ptr<Expression> known_sum = Number::construct(0);
+    shared_ptr<Expression> known_sum = Integer::construct(0);
     {
       for (auto it = elements.begin(); it < elements.end(); ++it) {
         if ((*it)->dependencies().size() == 0 && (*it)->type() != "list") {
@@ -83,7 +84,7 @@ namespace mathgraph::algebra {
           multiplier = mult->known();
         } else {
           base = *a_it;
-          multiplier = Number::construct(1);
+          multiplier = Integer::construct(1);
         }
         for (auto b_it = elements.begin(); b_it < elements.end(); ++b_it) {
           if (a_it == b_it) {
@@ -96,7 +97,7 @@ namespace mathgraph::algebra {
               elements.erase(b_it--);
             }
           } else if (*b_it == base) {
-            multiplier = Addition::_reduce({multiplier, Number::construct(1)}, scope);
+            multiplier = Addition::_reduce({multiplier, Integer::construct(1)}, scope);
             elements.erase(b_it--);
           }
         }
@@ -106,7 +107,7 @@ namespace mathgraph::algebra {
       elements = reduced_elements;
     }
 
-    if (!(known_sum == Number::construct(0)) || elements.size() == 0) {
+    if (!(known_sum == Integer::construct(0)) || elements.size() == 0) {
       elements.push_back(known_sum);
     }
 
@@ -130,7 +131,7 @@ namespace mathgraph::algebra {
       }
     }
 
-    vector<shared_ptr<Expression>> denominator_elements = {Number::construct(1)};
+    vector<shared_ptr<Expression>> denominator_elements = {Integer::construct(1)};
 
     for (auto element : elements) {
       if (element == "fraction") {
@@ -141,7 +142,7 @@ namespace mathgraph::algebra {
 
     shared_ptr<Expression> denominator = Multiplication::_reduce(denominator_elements, scope);
 
-    if (denominator == Number::construct(1)) {
+    if (denominator == Integer::construct(1)) {
       return shared_ptr<Expression>(new Addition(elements));
     }
     
@@ -156,7 +157,7 @@ namespace mathgraph::algebra {
     return Fraction::_reduce(numerator, denominator, scope);
   }
   shared_ptr<Expression> Addition::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
-    shared_ptr<Expression> result = Number::construct(0);
+    shared_ptr<Expression> result = Integer::construct(0);
     for (auto element : elements) {
       result = operations::add(result, element->evaluate(element, scope));
     }

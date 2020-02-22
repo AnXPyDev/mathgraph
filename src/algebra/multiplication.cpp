@@ -3,7 +3,8 @@
 
 #include "base.hpp"
 #include "expression.hpp"
-#include "number.hpp"
+#include "integer.hpp"
+#include "float.hpp"
 #include "fraction.hpp"
 #include "exponentiation.hpp"
 #include "list.hpp"
@@ -27,11 +28,11 @@ namespace mathgraph::algebra {
   }
   shared_ptr<Expression> Multiplication::known() {
     for (auto element : this->_elements) {
-      if ((element->type() == "number" || element->type() == "fraction") && element->dependencies().size() == 0) {
+      if (element->type() == "number" || (element->type() == "fraction" && element->dependencies().size() == 0)) {
         return element;
       }
     }
-    return Number::construct(1);
+    return Integer::construct(1);
   }
   vector<shared_ptr<Expression>> Multiplication::unknown() {
     auto known = this->known();
@@ -80,7 +81,7 @@ namespace mathgraph::algebra {
       elements = reduced_elements;
     }
 
-    shared_ptr<Expression> known_product = Number::construct(1);
+    shared_ptr<Expression> known_product = Integer::construct(1);
     {
       for (auto it = elements.begin(); it < elements.end(); ++it) {
         if ((*it)->dependencies().size() == 0 && (*it)->type() != "list") {
@@ -101,7 +102,7 @@ namespace mathgraph::algebra {
           exponent = exp->exponent();
         } else {
           base = *a_it;
-          exponent = Number::construct(1);
+          exponent = Integer::construct(1);
         }
         for (auto b_it = elements.begin(); b_it < elements.end(); ++b_it) {
           if (a_it == b_it) {
@@ -114,7 +115,7 @@ namespace mathgraph::algebra {
               elements.erase(b_it--);
             }
           } else if (*b_it == base) {
-            exponent = Addition::_reduce({exponent, Number::construct(1)}, scope);
+            exponent = Addition::_reduce({exponent, Integer::construct(1)}, scope);
             elements.erase(b_it--);
           }
         }
@@ -124,7 +125,7 @@ namespace mathgraph::algebra {
       elements = reduced_elements;
     }
 
-    if (!(known_product == Number::construct(1)) || elements.size() == 0) {
+    if (!(known_product == Integer::construct(1)) || elements.size() == 0) {
       elements.push_back(known_product);
     }
 
@@ -189,7 +190,7 @@ namespace mathgraph::algebra {
     
   }
   shared_ptr<Expression> Multiplication::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
-    shared_ptr<Expression> result = Number::construct(0);
+    shared_ptr<Expression> result = Integer::construct(0);
     for (auto element : elements) {
       result = operations::multiply(result, element->evaluate(element, scope));
     }

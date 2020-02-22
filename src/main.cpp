@@ -7,7 +7,8 @@ using namespace mathgraph;
 using namespace mathgraph::algebra;
 
 #define SYM Symbol::construct
-#define NUM Number::construct
+#define INT Integer::construct
+#define FLOAT Float::construct
 #define FRAC Fraction::construct
 #define EXP Exponentiation::construct
 #define LIST List::construct
@@ -17,8 +18,8 @@ using namespace mathgraph::algebra;
 
 int main() {
   auto global_scope = SCOPE();
-  global_scope->set_key(SYM("x"), LIST({NUM(5), NUM(10), NUM(15)}));
-  auto expr = EXP(LIST({NUM(2), SYM("x")}), NUM(2));
+  global_scope->set_key(SYM("x"), LIST({INT(5.55), INT(10), INT(15)}));
+  auto expr = EXP(LIST({INT(2), SYM("x")}), INT(2));
   auto reduced_expr = Expression::_reduce(expr);
   auto evaluated_expr = Expression::_evaluate(reduced_expr, global_scope);
   cout << expr << endl;

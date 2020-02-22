@@ -5,7 +5,8 @@
 #include "base.hpp"
 #include "scope.hpp"
 #include "expression.hpp"
-#include "number.hpp"
+#include "integer.hpp"
+#include "float.hpp"
 #include "fraction.hpp"
 #include "addition.hpp"
 #include "multiplication.hpp"
@@ -70,14 +71,14 @@ namespace mathgraph::algebra {
         new_list_elements.push_back(Exponentiation::_reduce(base, list_element, scope));
       }
       return List::construct(new_list_elements);
-    } else if (base == Number::construct(1) || exponent == Number::construct(1)) {
+    } else if (base == Integer::construct(1) || exponent == Integer::construct(1)) {
       return base;
-    } else if (exponent == Number::construct(0)) {
-      return Number::construct(1);
+    } else if (exponent == Integer::construct(0)) {
+      return Integer::construct(1);
     } else if (base == "exponentiation") {
       auto exp = dynamic_cast<Exponentiation*>(base.get());
       return Exponentiation::_reduce(exp->base(), Multiplication::_reduce({exp->exponent(), exponent}, scope), scope);
-    } else if (base->dependencies().size() + exponent->dependencies().size() == 0 && exponent == "number") {
+    } else if (base->dependencies().size() + exponent->dependencies().size() == 0 && exponent == "integer") {
       return operations::power(base, exponent);
     } else if (base == "fraction") {
       auto frac = dynamic_cast<Fraction*>(base.get());

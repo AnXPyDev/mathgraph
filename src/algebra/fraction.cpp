@@ -5,7 +5,8 @@
 #include "base.hpp"
 #include "scope.hpp"
 #include "expression.hpp"
-#include "number.hpp"
+#include "integer.hpp"
+#include "float.hpp"
 #include "exponentiation.hpp"
 #include "list.hpp"
 #include "addition.hpp"
@@ -112,17 +113,17 @@ namespace mathgraph::algebra {
       }
 
       if (numerator_rest.size() == 0) {
-        numerator_rest.push_back(Number::construct(1));
+        numerator_rest.push_back(Integer::construct(1));
       }
 
       numerator = Multiplication::_reduce(numerator_rest, scope);
       denominator = Multiplication::_reduce(denominator_rest, scope);
-    } else if (denominator == Number::construct(0)) {
+    } else if (denominator == Integer::construct(0)) {
       return undefined;
-    } else if (numerator == Number::construct(0) || denominator == Number::construct(1)) {
+    } else if (numerator == Integer::construct(0) || denominator == Integer::construct(1)) {
       return numerator;
     } else if (numerator == denominator) {
-      return Number::construct(1);
+      return Integer::construct(1);
     } else if (numerator == "fraction" || denominator == "fraction") {
       shared_ptr<Expression> fraction_matrix[2][2];
       int i = 0;
@@ -133,18 +134,19 @@ namespace mathgraph::algebra {
           fraction_matrix[i][1] = frac->denominator();
         } else {
           fraction_matrix[i][0] = element;
-          fraction_matrix[i][1] = Number::construct(1);
+          fraction_matrix[i][1] = Integer::construct(1);
         }
         ++i;
       }
       return Fraction::_reduce(Multiplication::_reduce({fraction_matrix[0][0], fraction_matrix[1][1]}, scope), Multiplication::_reduce({fraction_matrix[0][1], fraction_matrix[1][0]}, scope), scope);
-    } else if (numerator == "number" && denominator == "number") {
-      whole_t a = dynamic_cast<Number*>(numerator.get())->value();
-      whole_t b = dynamic_cast<Number*>(denominator.get())->value();
-      whole_t gcd = operations::gcd(a, b);
-      return shared_ptr<Expression>(new Fraction(Number::construct(a / gcd), Number::construct(b / gcd)));
+    } else if (numerator == "integer" && denominator == "integer") {
+      integer_t a = dynamic_cast<Integer*>(numerator.get())->value();
+      integer_t b = dynamic_cast<Integer*>(denominator.get())->value();
+      integer_t gcd = operations::gcd(a, b);
+      return shared_ptr<Expression>(new Fraction(Integer::construct(a / gcd), Integer::construct(b / gcd)));
+    } else if (numerator == "float" || denominator == "float") {
+      return shared_ptr<Expression>(new Fraction(numerator, denominator));
     }
-
     vector<shared_ptr<Expression>> numerator_elements;
     vector<shared_ptr<Expression>> denominator_elements;
 
@@ -171,17 +173,17 @@ namespace mathgraph::algebra {
           exponent = exp->exponent();
         } else {
           base = *a_it;
-          exponent = Number::construct(1);
+          exponent = Integer::construct(1);
         }
         for (auto b_it = denominator_elements.begin(); b_it < denominator_elements.end(); ++b_it) {
           if (*b_it == "exponentiation") {
             auto exp = dynamic_cast<Exponentiation*>((*b_it).get());
             if (exp->base() == base) {
-              exponent = Addition::_reduce({exponent, Multiplication::_reduce({Number::construct(-1), exp->exponent()}, scope)}, scope);
+              exponent = Addition::_reduce({exponent, Multiplication::_reduce({Integer::construct(-1), exp->exponent()}, scope)}, scope);
               denominator_elements.erase(b_it--);
             }
           } else if (*b_it == base) {
-            exponent = Addition::_reduce({exponent, Number::construct(-1)}, scope);
+            exponent = Addition::_reduce({exponent, Integer::construct(-1)}, scope);
             denominator_elements.erase(b_it--);
           }
         }
@@ -196,7 +198,7 @@ namespace mathgraph::algebra {
     }
 
     if (numerator_elements.size() == 0) {
-      numerator_elements.push_back(Number::construct(1));
+      numerator_elements.push_back(Integer::construct(1));
     }
 
     numerator = Multiplication::_reduce(numerator_elements, scope);

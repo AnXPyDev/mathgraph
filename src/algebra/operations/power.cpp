@@ -3,7 +3,8 @@
 
 #include "../base.hpp"
 #include "../expression.hpp"
-#include "../number.hpp"
+#include "../float.hpp"
+#include "../integer.hpp"
 #include "../fraction.hpp"
 #include "../exponentiation.hpp"
 #include "../multiplication.hpp"
@@ -19,50 +20,49 @@ namespace mathgraph::algebra::operations {
       return Exponentiation::_reduce(expr_a, expr_b);
     }
 
-    if (expr_a->type() == "undefined" || expr_b->type() == "undefined") {
+    if (expr_a == "undefined" || expr_b == "undefined") {
       return undefined;
-    } else if (expr_a->type() == "error") {
+    } else if (expr_a == "error") {
       return expr_a;
-    } else if (expr_b->type() == "error") {
+    } else if (expr_b == "error") {
       return expr_b;
-    } else if (expr_a->type() == "list") {
+    } else if (expr_a == "list") {
       vector<shared_ptr<Expression>> new_list_elements;
       auto elements = dynamic_cast<List*>(expr_a.get())->elements();
       for (auto element : elements) {
         new_list_elements.push_back(power(element, expr_b));
       }
       return List::construct(new_list_elements);
-    } else if (expr_b->type() == "list") {
+    } else if (expr_b == "list") {
       vector<shared_ptr<Expression>> new_list_elements;
       auto elements = dynamic_cast<List*>(expr_b.get())->elements();
       for (auto element : elements) {
         new_list_elements.push_back(power(expr_a, element));
       }
       return List::construct(new_list_elements);
-    }    if (expr_a->type() == "undefined" || expr_b->type() == "undefined") {
-      return undefined;
-    }
-
-    if (expr_a->type() == "error") {
-      return expr_a;
-    } else if (expr_b->type() == "error") {
-      return expr_b;
-    }
-
-    number_t fraction_matrix[2][2] = {{0,1}, {0,1}};
-
-    int i = 0;
-    for (auto expr : {expr_a, expr_b}) {
-      if (expr->type() == "number") {
-        fraction_matrix[i][0] = dynamic_cast<Number*>(expr.get())->value();
-      } else if (expr->type() == "fraction") {
-        auto frac = dynamic_cast<Fraction*>(expr.get());
-        fraction_matrix[i][0] = dynamic_cast<Number*>(frac->numerator().get())->value();
-        fraction_matrix[i][1] = dynamic_cast<Number*>(frac->denominator().get())->value();
+    } else if (expr_a == "number" && expr_b == "number") {
+      float_t a;
+      float_t b;
+      if (expr_a == "float") {
+        a = dynamic_cast<Float*>(expr_a.get())->value();
+      } else {
+        a = dynamic_cast<Integer*>(expr_a.get())->value();
       }
-      ++i;
+      if (expr_b == "float") {
+        b = dynamic_cast<Float*>(expr_b.get())->value();
+      } else {
+        b = dynamic_cast<Integer*>(expr_b.get())->value();
+      }
+
+      if (expr_a == "float" || expr_b == "float") {
+        return Float::construct(pow(a, b));
+      }
+      return Integer::construct(pow(a, b));
+    } else if (expr_a == "fraction" && expr_b == "number") {
+      auto frac = dynamic_cast<Fraction*>(expr_a.get());
+      return Fraction::_reduce(power(frac->numerator(), expr_b), power(frac->denominator(), expr_b));
     }
-    return Fraction::_reduce(Number::construct(pow(fraction_matrix[0][0], fraction_matrix[1][0])), Number::construct(pow(fraction_matrix[0][1], fraction_matrix[1][0])));
+    return undefined;
   }
 
 }

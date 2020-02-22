@@ -39,6 +39,9 @@ namespace mathgraph::algebra {
     return operations::equal(expr_a, expr_b);
   }
   bool operator==(shared_ptr<Expression> expr, string type) {
+    if (type == "number") {
+      return (expr->type() == "float" || expr->type() == "integer");
+    }
     return expr->type() == type;
   }
 }

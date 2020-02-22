@@ -4,7 +4,8 @@
 
 #include "../expression.hpp"
 #include "../symbol.hpp"
-#include "../number.hpp"
+#include "../integer.hpp"
+#include "../float.hpp"
 #include "../fraction.hpp"
 #include "../exponentiation.hpp"
 #include "../list.hpp"
@@ -19,8 +20,16 @@ namespace mathgraph::algebra::operations {
     return sym_a->value() == sym_b->value();
   }
 
-  bool equal(Number* num_a, Number* num_b) {
-    return num_a->value() == num_b->value();
+  bool equal(Integer* int_a, Integer* int_b) {
+    return int_a->value() == int_b->value();
+  }
+
+  bool equal(Float* float_a, Float* float_b) {
+    return float_a->value() == float_b->value();
+  }
+
+  bool equal(Float* float_a, Integer* integer_b) {
+    return float_a->value() == integer_b->value();
   }
 
   bool equal(Fraction* frac_a, Fraction* frac_b) {
@@ -50,8 +59,10 @@ namespace mathgraph::algebra::operations {
         return true;
       } else if (type == "symbol") {
         return equal(dynamic_cast<Symbol*>(expr_a.get()), dynamic_cast<Symbol*>(expr_b.get()));
-      } else if (type == "number") {
-        return equal(dynamic_cast<Number*>(expr_a.get()), dynamic_cast<Number*>(expr_b.get()));
+      } else if (type == "integer") {
+        return equal(dynamic_cast<Integer*>(expr_a.get()), dynamic_cast<Integer*>(expr_b.get()));
+      } else if (type == "float") {
+        return equal(dynamic_cast<Float*>(expr_a.get()), dynamic_cast<Float*>(expr_b.get()));
       } else if (type == "fraction") {
         return equal(dynamic_cast<Fraction*>(expr_a.get()), dynamic_cast<Fraction*>(expr_b.get()));
       } else if (type == "exponentiation") {
@@ -59,6 +70,11 @@ namespace mathgraph::algebra::operations {
       } else if (type == "list" || type == "addition" || type == "multiplication") {
         return equal(dynamic_cast<List*>(expr_a.get()), dynamic_cast<List*>(expr_b.get()));
       }
+    } else if ((expr_a->type() == "float" || expr_a->type() == "integer") && (expr_b->type() == "float" || expr_b->type() == "integer")) {
+      if (expr_a->type() == "float") {
+        return equal(dynamic_cast<Float*>(expr_a.get()), dynamic_cast<Integer*>(expr_b.get()));
+      }
+      return equal(dynamic_cast<Float*>(expr_b.get()), dynamic_cast<Integer*>(expr_a.get()));
     }
     return false;
   }
