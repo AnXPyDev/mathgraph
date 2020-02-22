@@ -189,6 +189,10 @@ namespace mathgraph::algebra {
     
   }
   shared_ptr<Expression> Multiplication::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
-    return undefined;
+    shared_ptr<Expression> result = Number::construct(0);
+    for (auto element : elements) {
+      result = operations::multiply(result, element->evaluate(element, scope));
+    }
+    return result;
   }
 }

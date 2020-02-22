@@ -28,6 +28,10 @@ namespace mathgraph::algebra {
     return expr->reduce(expr, scope);
   }
 
+  shared_ptr<Expression> Expression::_evaluate(shared_ptr<Expression> expr, shared_ptr<Scope> scope) {
+    return expr->evaluate(expr, scope);
+  }
+
   ostream& operator<<(ostream& stream, shared_ptr<Expression> expression) {
     return expression->output_to_stream(stream);
   }

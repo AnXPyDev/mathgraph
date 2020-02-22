@@ -29,6 +29,7 @@ namespace mathgraph::algebra {
     const string& type();
     Expression();
     static shared_ptr<Expression> _reduce(shared_ptr<Expression> expr = undefined, shared_ptr<Scope> scope = empty_scope);
+    static shared_ptr<Expression> _evaluate(shared_ptr<Expression> expr = undefined, shared_ptr<Scope> scope = empty_scope);
   protected:
     // type of expression (for example: number, list ...)
     string _type;

@@ -5,6 +5,7 @@
 
 #include "base.hpp"
 #include "expression.hpp"
+#include "error.hpp"
 #include "symbol.hpp"
 
 using namespace std;
@@ -12,8 +13,11 @@ using namespace std;
 namespace mathgraph::algebra {
   ostream& Symbol::output_to_stream(ostream& stream) { return stream << this->_value; }
   shared_ptr<Expression> Symbol::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
-    // TODO: implement getting expression from scope
-    return undefined;
+    auto ret = scope->get_key(this->_value);
+    if (ret == "undefined") {
+      return Error::construct("symbol \"" + this->_value + "\" does not refer to a defined expression in this scope");
+    }
+    return ret;
   }
   vector<shared_ptr<Expression>> Symbol::dependencies(shared_ptr<Expression> caller) {
     return {caller};

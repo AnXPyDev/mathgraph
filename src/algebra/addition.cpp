@@ -156,6 +156,10 @@ namespace mathgraph::algebra {
     return Fraction::_reduce(numerator, denominator, scope);
   }
   shared_ptr<Expression> Addition::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
-    return undefined;
+    shared_ptr<Expression> result = Number::construct(0);
+    for (auto element : elements) {
+      result = operations::add(result, element->evaluate(element, scope));
+    }
+    return result;
   }
 }

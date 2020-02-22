@@ -1,12 +1,16 @@
 #include <memory>
+#include <vector>
 
 #include "../base.hpp"
 #include "../expression.hpp"
 #include "../number.hpp"
 #include "../fraction.hpp"
+#include "../list.hpp"
 #include "../addition.hpp"
 #include "base.hpp"
 #include "add.hpp"
+
+using namespace std;
 
 namespace mathgraph::algebra::operations {
   shared_ptr<Expression> add(shared_ptr<Expression> expr_a, shared_ptr<Expression> expr_b) {
@@ -17,6 +21,24 @@ namespace mathgraph::algebra::operations {
 
     if (expr_a->type() == "undefined" || expr_b->type() == "undefined") {
       return undefined;
+    } else if (expr_a->type() == "error") {
+      return expr_a;
+    } else if (expr_b->type() == "error") {
+      return expr_b;
+    } else if (expr_a->type() == "list") {
+      vector<shared_ptr<Expression>> new_list_elements;
+      auto elements = dynamic_cast<List*>(expr_a.get())->elements();
+      for (auto element : elements) {
+        new_list_elements.push_back(add(element, expr_b));
+      }
+      return List::construct(new_list_elements);
+    } else if (expr_b->type() == "list") {
+      vector<shared_ptr<Expression>> new_list_elements;
+      auto elements = dynamic_cast<List*>(expr_b.get())->elements();
+      for (auto element : elements) {
+        new_list_elements.push_back(add(expr_a, element));
+      }
+      return List::construct(new_list_elements);
     }
 
     number_t fraction_matrix[2][2] = {{0,1}, {0,1}};

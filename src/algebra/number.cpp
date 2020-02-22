@@ -19,7 +19,8 @@ namespace mathgraph::algebra {
 
   shared_ptr<Expression> Number::construct(number_t value) {
     if (!ALLOW_FLOATING_POINT && value - floor(value) > EPSILON) {
-      return Fraction::construct(Number::construct(value / operations::gcd(value)), Number::construct(1));
+      auto gcd = operations::gcd(value);
+      return Fraction::construct(Number::construct(value / gcd), Number::construct((approx_t)1 / gcd));
     }
     return shared_ptr<Expression>(new Number((number_t)value));
   }

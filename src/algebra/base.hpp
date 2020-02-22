@@ -5,7 +5,7 @@ namespace mathgraph {
     typedef double approx_t;
     typedef int whole_t;
     typedef approx_t number_t;
-    const bool ALLOW_FLOATING_POINT = true;
+    const bool ALLOW_FLOATING_POINT = false;
     const approx_t EPSILON = 0.0000000001;
   }
 }

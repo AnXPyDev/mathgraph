@@ -8,7 +8,7 @@ CC=g++
 MAINFLAGS=
 OBJECTFLAGS=
 DIFF_FOLDER=temp
-OBJECTS=src/main src/algebra/scope src/algebra/expression src/algebra/symbol src/algebra/number src/algebra/fraction src/algebra/exponentiation src/algebra/list src/algebra/addition src/algebra/multiplication src/algebra/operations/equal src/algebra/operations/add src/algebra/operations/multiply src/algebra/operations/power src/algebra/operations/gcd
+OBJECTS=src/main src/algebra/scope src/algebra/expression src/algebra/error src/algebra/symbol src/algebra/number src/algebra/fraction src/algebra/exponentiation src/algebra/list src/algebra/addition src/algebra/multiplication src/algebra/operations/equal src/algebra/operations/add src/algebra/operations/multiply src/algebra/operations/power src/algebra/operations/gcd
 
 main: objects
 	@$(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(object).o)

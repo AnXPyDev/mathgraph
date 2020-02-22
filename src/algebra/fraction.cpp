@@ -205,8 +205,7 @@ namespace mathgraph::algebra {
     return shared_ptr<Expression>(new Fraction(numerator, denominator));
   }
   shared_ptr<Expression> Fraction::_evaluate(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator, shared_ptr<Scope> scope) {
-    // TODO: implement fraction evaluation
-    return undefined;
+    return Fraction::construct(Expression::_evaluate(numerator, scope), Expression::_evaluate(denominator, scope));
   }
   shared_ptr<Expression> Fraction::construct(shared_ptr<Expression> numerator, shared_ptr<Expression> denominator) {
     return shared_ptr<Expression>(new Fraction(numerator, denominator));

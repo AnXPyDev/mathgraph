@@ -86,8 +86,7 @@ namespace mathgraph::algebra {
     return shared_ptr<Expression>(new Exponentiation(base, exponent));
   }
   shared_ptr<Expression> Exponentiation::_evaluate(shared_ptr<Expression> base, shared_ptr<Expression> exponent, shared_ptr<Scope> scope) {
-    // TODO: implement exponentiation evaluation
-    return undefined;
+    return operations::power(base->evaluate(base, scope), exponent->evaluate(exponent, scope));
   }
   shared_ptr<Expression> Exponentiation::construct(shared_ptr<Expression> base, shared_ptr<Expression> exponent) {
     return shared_ptr<Expression>(new Exponentiation(base, exponent));
