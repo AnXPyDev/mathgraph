@@ -12,7 +12,7 @@ CC=g++
 MAINFLAGS=
 OBJECTFLAGS=-I $(INCLUDE_DIR)
 DIRS=./ algebra algebra/operations
-OBJECTS=main algebra/scope algebra/expression algebra/error algebra/symbol algebra/integer algebra/float algebra/fraction algebra/exponentiation algebra/list algebra/addition algebra/multiplication algebra/function algebra/operations/equal algebra/operations/add algebra/operations/multiply algebra/operations/power algebra/operations/gcd
+OBJECTS=main algebra/scope algebra/expression algebra/error algebra/symbol algebra/integer algebra/float algebra/fraction algebra/exponentiation algebra/list algebra/addition algebra/multiplication algebra/function algebra/assignment algebra/operations/equal algebra/operations/add algebra/operations/multiply algebra/operations/power algebra/operations/gcd
 
 main: build_dir objects
 	@echo "Linking objects into executable: $(NAME)" && $(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(BUILD_DIR)$(object).o) || echo "Linking into executable failed"

@@ -2,19 +2,24 @@
 
 #include "base.hpp"
 #include "expression.hpp"
+#include "error.hpp"
 #include "symbol.hpp"
 #include "scope.hpp"
 
 using namespace std;
 
 namespace mathgraph::algebra {
-  void Scope::set_key(string key, shared_ptr<Expression> expr) {
-    if (this->_locked) return;
-    this->key_map[key] = expr;
+  shared_ptr<Expression> Scope::set_key(string key, shared_ptr<Expression> expr) {
+    if (!this->_locked) {
+      this->key_map[key] = expr;
+    }
+    return expr;
   }
-  void Scope::set_key(shared_ptr<Expression> key, shared_ptr<Expression> expr) {
+  shared_ptr<Expression> Scope::set_key(shared_ptr<Expression> key, shared_ptr<Expression> expr) {
     if (key == "symbol") {
-      this->set_key(dynamic_cast<Symbol*>(key.get())->value(), expr);
+      return this->set_key(dynamic_cast<Symbol*>(key.get())->value(), expr);
+    } else {
+      return Error::construct("scope can't assign to type: " + key->type());
     }
   }
   shared_ptr<Expression> Scope::get_key(string key) {

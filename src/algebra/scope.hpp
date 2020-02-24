@@ -15,8 +15,8 @@ namespace mathgraph::algebra {
   struct Scope;
   extern shared_ptr<Scope> empty_scope;
   struct Scope {
-    void set_key(string key, shared_ptr<Expression> expr = undefined);
-    void set_key(shared_ptr<Expression> key, shared_ptr<Expression> expr = undefined);
+    shared_ptr<Expression> set_key(string key, shared_ptr<Expression> expr = undefined);
+    shared_ptr<Expression> set_key(shared_ptr<Expression> key, shared_ptr<Expression> expr = undefined);
     shared_ptr<Expression> get_key(string key);
     shared_ptr<Expression> get_key(shared_ptr<Expression> key);
     void set_parent(shared_ptr<Scope> parent = empty_scope);
