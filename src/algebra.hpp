@@ -11,5 +11,6 @@
 #include "algebra/list.hpp"
 #include "algebra/addition.hpp"
 #include "algebra/multiplication.hpp"
+#include "algebra/function.hpp"
 
 #include "algebra/operations.hpp"

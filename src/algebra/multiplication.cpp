@@ -190,7 +190,7 @@ namespace mathgraph::algebra {
     
   }
   shared_ptr<Expression> Multiplication::_evaluate(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
-    shared_ptr<Expression> result = Integer::construct(0);
+    shared_ptr<Expression> result = Integer::construct(1);
     for (auto element : elements) {
       result = operations::multiply(result, element->evaluate(element, scope));
     }

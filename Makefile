@@ -3,20 +3,26 @@ define \n
 
 endef
 
+SOURCE_DIR=src/
+BUILD_DIR=build/
+INCLUDE_DIR=include/
+
 NAME=mathgraph
 CC=g++
 MAINFLAGS=
-OBJECTFLAGS=
-DIFF_FOLDER=temp
-OBJECTS=src/main src/algebra/scope src/algebra/expression src/algebra/error src/algebra/symbol src/algebra/integer src/algebra/float src/algebra/fraction src/algebra/exponentiation src/algebra/list src/algebra/addition src/algebra/multiplication src/algebra/operations/equal src/algebra/operations/add src/algebra/operations/multiply src/algebra/operations/power src/algebra/operations/gcd
+OBJECTFLAGS=-I $(INCLUDE_DIR)
+DIRS=./ algebra algebra/operations
+OBJECTS=main algebra/scope algebra/expression algebra/error algebra/symbol algebra/integer algebra/float algebra/fraction algebra/exponentiation algebra/list algebra/addition algebra/multiplication algebra/function algebra/operations/equal algebra/operations/add algebra/operations/multiply algebra/operations/power algebra/operations/gcd
 
-main: objects
-	@$(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(object).o)
-	@echo "Linking objects into executable: $(NAME)"
+main: build_dir objects
+	@echo "Linking objects into executable: $(NAME)" && $(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(BUILD_DIR)$(object).o) || echo "Linking into executable failed"
+
+build_dir:
+	@[ ! -d $(BUILD_DIR) ] && mkdir $(BUILD_DIR) && echo "Created build directory: $(BUILD_DIR)" || echo "Build directory exists: $(BUILD_DIR)"	
+	$(foreach subdir,$(DIRS),@[ ! -d $(BUILD_DIR)$(subdir) ] && mkdir $(BUILD_DIR)$(subdir) && echo "Created subdirectory: $(BUILD_DIR)$(subdir)" || echo "Subdirectory already exists: $(BUILD_DIR)$(subdir)"${\n})
 
 objects:
-	$(foreach object,$(OBJECTS),@[ ! -f $(object).o ] && echo "Compiling to object: $(object).cpp" && $(CC) -c $(OBJECTFLAGS) $(object).cpp -o $(object).o || echo "Skipping compilation: $(object).cpp"${\n})
+	$(foreach object,$(OBJECTS),@[ ! -f $(BUILD_DIR)$(object).o ] && echo "Compiling to object: $(SOURCE_DIR)$(object).cpp" && $(CC) -c $(OBJECTFLAGS) $(SOURCE_DIR)$(object).cpp -o $(BUILD_DIR)$(object).o || echo "Skipping compilation: $(SOURCE_DIR)$(object).cpp"${\n})
 
 clean:
-	$(foreach object,$(OBJECTS),@rm -f "$(object).o" && echo "Removed object: $(object).o" || "Failed to remove object: $(object).o"${\n})
-	@rm -rf $(NAME) && echo "Removed executable: $(NAME)" || "Failed to remove executable: $(NAME)"
+	@[ -d $(BUILD_DIR) ] && rm -rf $(BUILD_DIR) && echo "Cleaned build" || echo "Already clean"

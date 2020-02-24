@@ -17,7 +17,7 @@ namespace mathgraph::algebra {
     if (ret == "undefined") {
       return Error::construct("symbol \"" + this->_value + "\" does not refer to a defined expression in this scope");
     }
-    return ret;
+    return Expression::_evaluate(ret, scope);
   }
   vector<shared_ptr<Expression>> Symbol::dependencies(shared_ptr<Expression> caller) {
     return {caller};

@@ -37,6 +37,9 @@ namespace mathgraph::algebra {
   shared_ptr<Expression> List::evaluate(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
     return List::_evaluate(this->_elements, scope);
   }
+  shared_ptr<Expression> List::reduce(shared_ptr<Expression> caller, shared_ptr<Scope> scope) {
+    return List::_reduce(this->_elements, scope);
+  }
   const vector<shared_ptr<Expression>>& List::elements() {
     return this->_elements;
   }
@@ -50,6 +53,13 @@ namespace mathgraph::algebra {
     vector<shared_ptr<Expression>> new_list_elements = {};
     for (auto element : elements) {
       new_list_elements.push_back(element->evaluate(element, scope));
+    }
+    return List::construct(new_list_elements);
+  }
+  shared_ptr<Expression> List::_reduce(vector<shared_ptr<Expression>> elements, shared_ptr<Scope> scope) {
+    vector<shared_ptr<Expression>> new_list_elements = {};
+    for (auto element : elements) {
+      new_list_elements.push_back(element->reduce(element, scope));
     }
     return List::construct(new_list_elements);
   }
