@@ -1,3 +1,4 @@
 *.o
 /mathgraph*
 /temp/
+/build/
