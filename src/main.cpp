@@ -17,23 +17,15 @@ using namespace mathgraph::algebra;
 #define FUNC Function::construct
 #define SCOPE Scope::construct
 #define ASS Assignment::construct
+#define CALL Call::construct
+#define EVAL Expression::_evaluate
 
 int main() {
   auto global_scope = SCOPE();
-  // auto expr = ADD({MULT({FLOAT(2.5), INT(2), SYM("x")}), LIST({FLOAT(5.132), INT(33)})});
-  for (auto expr : {
-      ASS(SYM("x"), LIST({FLOAT(5.51321), INT(3)})),
-        ASS(SYM("y"), FLOAT(3.1341)),
-        EXP(SYM("x"), SYM("y")),
-    }) {
-    cout << "---------------------" << endl;
-    auto reduced_expr = Expression::_reduce(expr);
-    auto evaluated_expr = Expression::_evaluate(reduced_expr, global_scope);
-    auto straight_to_eval = Expression::_evaluate(expr, global_scope);
-    cout << "base:                " << expr << endl;
-    cout << "reduced:             " << reduced_expr << endl;
-    cout << "evaluated:           " << evaluated_expr << endl;
-    cout << "evaluated from base: " << straight_to_eval << endl;
+  EVAL(ASS(SYM("f"), FUNC(MULT({INT(2), SYM("x"), SYM("y")}), LIST({SYM("x"), SYM("y")}))), global_scope);
+
+  for (int i = 1; i <= 100000; ++i) {
+    EVAL(CALL(SYM("f"), INT(i)), global_scope);
   }
-  return 0;
+  
 }

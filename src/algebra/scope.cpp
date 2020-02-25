@@ -33,7 +33,7 @@ namespace mathgraph::algebra {
   }
   shared_ptr<Expression> Scope::get_key(shared_ptr<Expression> key) {
     if (key == "symbol") {
-      this->get_key(dynamic_cast<Symbol*>(key.get())->value());
+      return this->get_key(dynamic_cast<Symbol*>(key.get())->value());
     }
     return undefined;
   }

@@ -13,5 +13,6 @@
 #include "algebra/multiplication.hpp"
 #include "algebra/function.hpp"
 #include "algebra/assignment.hpp"
+#include "algebra/call.hpp"
 
 #include "algebra/operations.hpp"
