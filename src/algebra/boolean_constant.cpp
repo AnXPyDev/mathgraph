@@ -5,6 +5,7 @@
 #include "base.hpp"
 #include "expression.hpp"
 #include "list.hpp"
+#include "boolean.hpp"
 #include "boolean_constant.hpp"
 
 using namespace std;
@@ -30,10 +31,12 @@ namespace mathgraph::algebra {
         new_list_elements.push_back(Boolean_Constant::construct(element));
       }
       return List::construct(new_list_elements);
-    } else if (expr == "boolean") {
+    } else if (expr == "boolean_constant") {
       return expr;
+    } else if (expr->dependencies().size() == 0) {
+      return b_true;
     }
-    return b_true;
+    return Boolean::construct(expr);
   }
   shared_ptr<Expression> b_true = shared_ptr<Expression>(new Boolean_Constant(true));
   shared_ptr<Expression> b_false = shared_ptr<Expression>(new Boolean_Constant(false));

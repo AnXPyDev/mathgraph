@@ -20,3 +20,5 @@
 #include "algebra/call.hpp"
 
 #include "algebra/operations.hpp"
+
+#include "algebra/functions.hpp"
