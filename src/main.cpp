@@ -19,12 +19,14 @@ using namespace mathgraph::algebra;
 #define ASS Assignment::construct
 #define CALL Call::construct
 #define EVAL Expression::_evaluate
+#define REDUCE Expression::_reduce
+#define BOOL Boolean::construct
 
 int main() {
   auto global_scope = SCOPE();
   EVAL(ASS(SYM("f"), FUNC(MULT({INT(2), SYM("x"), SYM("y")}), LIST({SYM("x"), SYM("y")}))), global_scope);
 
-  for (int i = 1; i <= 100000; ++i) {
+  for (int i = 1; i <= 1000; ++i) {
     EVAL(CALL(SYM("f"), INT(i)), global_scope);
   }
   

@@ -146,7 +146,15 @@ namespace mathgraph::algebra {
       return shared_ptr<Expression>(new Fraction(Integer::construct(a / gcd), Integer::construct(b / gcd)));
     } else if (numerator == "float" || denominator == "float") {
       return shared_ptr<Expression>(new Fraction(numerator, denominator));
+    } else if (numerator == "addition") {
+      vector<shared_ptr<Expression>> new_addition_elements;
+      auto addition_elements = dynamic_cast<Addition*>(numerator.get())->elements();
+      for (auto element : addition_elements) {
+        new_addition_elements.push_back(Fraction::_reduce(element, denominator));
+      }
+      return Addition::_reduce(new_addition_elements);
     }
+
     vector<shared_ptr<Expression>> numerator_elements;
     vector<shared_ptr<Expression>> denominator_elements;
 
