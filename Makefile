@@ -1,28 +1,18 @@
-define \n
-
-
-endef
-
-SOURCE_DIR=src/
-BUILD_DIR=build/
-INCLUDE_DIR=include/
-
-NAME=mathgraph
 CC=g++
-MAINFLAGS=
-OBJECTFLAGS=-I $(INCLUDE_DIR)
-DIRS=./ algebra algebra/operations
-OBJECTS=main algebra/scope algebra/expression algebra/error algebra/symbol algebra/integer algebra/float algebra/boolean_constant algebra/boolean algebra/fraction algebra/exponentiation algebra/list algebra/addition algebra/multiplication algebra/function algebra/assignment algebra/call algebra/operations/equal algebra/operations/add algebra/operations/multiply algebra/operations/power algebra/operations/gcd
 
-main: build_dir objects
-	@echo "Linking objects into executable: $(NAME)" && $(CC) $(MAINFLAGS) -o $(NAME) $(foreach object,$(OBJECTS),$(BUILD_DIR)$(object).o) || echo "Linking into executable failed"
+SOURCE_DIR=src
+BUILD_DIR=build
+DIFF_DIR=diff
+INCLUDE_DIR=include
+OBJECT_EXTENTION=cpp
 
-build_dir:
-	@[ ! -d $(BUILD_DIR) ] && mkdir $(BUILD_DIR) && echo "Created build directory: $(BUILD_DIR)" || echo "Build directory exists: $(BUILD_DIR)"	
-	$(foreach subdir,$(DIRS),@[ ! -d $(BUILD_DIR)$(subdir) ] && mkdir $(BUILD_DIR)$(subdir) && echo "Created subdirectory: $(BUILD_DIR)$(subdir)" || echo "Subdirectory already exists: $(BUILD_DIR)$(subdir)"${\n})
+DIRECTORIES=$(shell bash -c 'find $(SOURCE_DIR) -type d -mindepth 1 | sed -e "s/$(SOURCE_DIR)\///g" | tr "\n" " "')
+OBJECTS=$(shell bash -c 'find $(SOURCE_DIR) -type f -regex ".*\.\$(OBJECT_EXTENTION)" | sed -e "s/$(SOURCE_DIR)\///g" -e "s/\.$(OBJECT_EXTENTION)//g" | tr "\n" " "')
 
-objects:
-	$(foreach object,$(OBJECTS),@[ ! -f $(BUILD_DIR)$(object).o ] && echo "Compiling to object: $(SOURCE_DIR)$(object).cpp" && $(CC) -c $(OBJECTFLAGS) $(SOURCE_DIR)$(object).cpp -o $(BUILD_DIR)$(object).o || echo "Skipping compilation: $(SOURCE_DIR)$(object).cpp"${\n})
+main:
+	@echo "OBJECTS:" $(OBJECTS)
+	@echo "DIRECTORIES:" $(DIRECTORIES)
 
 clean:
-	@[ -d $(BUILD_DIR) ] && rm -rf $(BUILD_DIR) && echo "Cleaned build" || echo "Already clean"
+	@echo -e "removing diff directory:" $(DIFF_DIR) " \c" && rm -rf $(DIFF_DIR) && echo "sucess" || echo "fail"
+	@echo -e "removing build directory:" $(BUILD_DIR) " \c" && rm -rf $(BUILD_DIR) && echo "sucess" || echo "fail"

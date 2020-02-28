@@ -6,21 +6,21 @@ using namespace std;
 using namespace mathgraph;
 using namespace mathgraph::algebra;
 
-#define SYM Symbol::construct
-#define INT Integer::construct
-#define FLOAT Float::construct
-#define FRAC Fraction::construct
-#define EXP Exponentiation::construct
-#define LIST List::construct
-#define ADD Addition::construct
-#define MULT Multiplication::construct
-#define FUNC Function::construct
+#define SYM types::Symbol::construct
+#define INT types::Integer::construct
+#define FLOAT types::Float::construct
+#define FRAC types::Fraction::construct
+#define EXP expressions::Exponentiation::construct
+#define LIST types::List::construct
+#define ADD expressions::Addition::construct
+#define MULT expressions::Multiplication::construct
+#define FUNC types::Function::construct
 #define SCOPE Scope::construct
-#define ASS Assignment::construct
-#define CALL Call::construct
+#define ASS expressions::Assignment::construct
+#define CALL expressions::Call::construct
 #define EVAL Expression::_evaluate
 #define REDUCE Expression::_reduce
-#define BOOL Boolean::construct
+#define BOOL expressions::Boolean_conversion::construct
 
 int main() {
   auto global_scope = SCOPE();

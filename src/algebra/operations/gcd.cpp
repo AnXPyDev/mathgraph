@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
 
-#include "../base.hpp"
-#include "base.hpp"
+#include "algebra/operations/base.hpp"
+#include "algebra/operations/gcd.hpp"
 
 using namespace std;
 

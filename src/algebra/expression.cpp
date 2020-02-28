@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include "base.hpp"
-#include "scope.hpp"
-#include "operations.hpp"
-#include "expression.hpp"
+#include "algebra/base.hpp"
+#include "algebra/scope.hpp"
+#include "algebra/operations.hpp"
+#include "algebra/expression.hpp"
 
 using namespace std;
 

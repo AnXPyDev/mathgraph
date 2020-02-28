@@ -1,0 +1,6 @@
+#include "algebra/operations/base.hpp"
+#include "algebra/operations/equal.hpp"
+#include "algebra/operations/add.hpp"
+#include "algebra/operations/multiply.hpp"
+#include "algebra/operations/power.hpp"
+#include "algebra/operations/gcd.hpp"

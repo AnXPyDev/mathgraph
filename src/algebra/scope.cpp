@@ -1,10 +1,10 @@
 #include <memory>
 
-#include "base.hpp"
-#include "expression.hpp"
-#include "error.hpp"
-#include "symbol.hpp"
-#include "scope.hpp"
+#include "algebra/base.hpp"
+#include "algebra/expression.hpp"
+#include "algebra/expressions/error.hpp"
+#include "algebra/types/symbol.hpp"
+#include "algebra/scope.hpp"
 
 using namespace std;
 
@@ -17,9 +17,9 @@ namespace mathgraph::algebra {
   }
   shared_ptr<Expression> Scope::set_key(shared_ptr<Expression> key, shared_ptr<Expression> expr) {
     if (key == "symbol") {
-      return this->set_key(dynamic_cast<Symbol*>(key.get())->value(), expr);
+      return this->set_key(dynamic_cast<types::Symbol*>(key.get())->value(), expr);
     } else {
-      return Error::construct("scope can't assign to type: " + key->type());
+      return expressions::Error::construct("scope can't assign to type: " + key->type());
     }
   }
   shared_ptr<Expression> Scope::get_key(string key) {
@@ -33,7 +33,7 @@ namespace mathgraph::algebra {
   }
   shared_ptr<Expression> Scope::get_key(shared_ptr<Expression> key) {
     if (key == "symbol") {
-      return this->get_key(dynamic_cast<Symbol*>(key.get())->value());
+      return this->get_key(dynamic_cast<types::Symbol*>(key.get())->value());
     }
     return undefined;
   }
