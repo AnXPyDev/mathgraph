@@ -23,6 +23,8 @@ using namespace mathgraph::algebra;
 #define BOOL_CONV expressions::Boolean_conversion::construct
 #define BOOL types::Boolean::construct
 #define IF functions::If::construct
+#define OR functions::Or::construct
+#define AND functions::And::construct
 
 int main() {
   //bruh
@@ -32,6 +34,10 @@ int main() {
   exprs.push_back(CALL(SYM("f"), LIST({LIST({INT(1), INT(2), INT(3), INT(4)})})));
   exprs.push_back(CALL(SYM("f"), LIST({LIST({INT(1), INT(2), INT(3), INT(4)})})));
   exprs.push_back(IF(BOOL(true), INT(5), INT(2)));
+  exprs.push_back(ASS(SYM("x"), INT(5)));
+  exprs.push_back(ASS(SYM("y"), INT(6)));
+  exprs.push_back(AND(SYM("x"), SYM("y")));
+  exprs.push_back(OR(SYM("x"), SYM("y")));
   for (auto expr : exprs) {
     auto reduced_expr = Expression::_reduce(expr);
     auto evaluated_expr = Expression::_evaluate(expr, global_scope);

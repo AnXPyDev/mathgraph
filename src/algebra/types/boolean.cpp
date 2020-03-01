@@ -16,7 +16,7 @@ namespace mathgraph::algebra::types {
   }
   const bool& Boolean::value() { return this->_value; }
   Boolean::Boolean(bool value) : _value{ value } {
-    this->_type = "boolean_constant";
+    this->_type = "boolean";
   }
   shared_ptr<Expression> Boolean::construct(bool value) {
     return value ? b_true : b_false;
@@ -31,7 +31,7 @@ namespace mathgraph::algebra::types {
         new_list_elements.push_back(Boolean::construct(element));
       }
       return List::construct(new_list_elements);
-    } else if (expr == "boolean_constant") {
+    } else if (expr == "boolean") {
       return expr;
     } else if (expr->dependencies().size() == 0) {
       return b_true;
