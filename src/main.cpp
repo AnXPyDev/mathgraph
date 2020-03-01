@@ -20,14 +20,27 @@ using namespace mathgraph::algebra;
 #define CALL expressions::Call::construct
 #define EVAL Expression::_evaluate
 #define REDUCE Expression::_reduce
-#define BOOL expressions::Boolean_conversion::construct
+#define BOOL_CONV expressions::Boolean_conversion::construct
+#define BOOL types::Boolean::construct
+#define IF functions::If::construct
 
 int main() {
+  //bruh
   auto global_scope = SCOPE();
-  EVAL(ASS(SYM("f"), FUNC(MULT({INT(2), SYM("x"), SYM("y")}), LIST({SYM("x"), SYM("y")}))), global_scope);
-
-  for (int i = 1; i <= 1000; ++i) {
-    EVAL(CALL(SYM("f"), INT(i)), global_scope);
+  vector<shared_ptr<Expression>> exprs;
+  exprs.push_back(ASS(SYM("f"), FUNC(ADD({MULT({INT(2), SYM("x")}), INT(2)}), LIST({SYM("x")}))));
+  exprs.push_back(CALL(SYM("f"), LIST({LIST({INT(1), INT(2), INT(3), INT(4)})})));
+  exprs.push_back(CALL(SYM("f"), LIST({LIST({INT(1), INT(2), INT(3), INT(4)})})));
+  exprs.push_back(IF(BOOL(true), INT(5), INT(2)));
+  for (auto expr : exprs) {
+    auto reduced_expr = Expression::_reduce(expr);
+    auto evaluated_expr = Expression::_evaluate(expr, global_scope);
+    auto evaluated_from_reduced_expr = Expression::_evaluate(reduced_expr, global_scope);
+    cout << "--------------------------" << endl;
+    cout << "base:                     " << expr << endl;
+    cout << "reduced:                  " << reduced_expr << endl;
+    cout << "evaluated from base:      " << evaluated_expr << endl;
+    cout << "evaluated from reduction: " << evaluated_from_reduced_expr << endl;
   }
   
 }

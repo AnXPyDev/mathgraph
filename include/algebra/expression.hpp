@@ -14,6 +14,7 @@ using namespace std;
 
 namespace mathgraph::algebra {
   struct Expression;
+  typedef shared_ptr<Expression> expr_t;
   // undefined is going to be used instead of constructing new instances of basic Expression
   extern shared_ptr<Expression> undefined;
   struct Expression {

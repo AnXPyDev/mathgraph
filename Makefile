@@ -18,7 +18,7 @@ main: build_objects
 
 build_objects: create_build_dir _build_objects create_diff_dir
 
-_build_objects: create_build_dir
+_build_objects:
 	@$(foreach object,$(OBJECTS),\
 		if [[ ( ! -f "$(BUILD_DIR)/$(object).o" ) || ( ( -f "$(DIFF_DIR)/$(object).cpp" ) && $$(diff -q "$(DIFF_DIR)/$(object).cpp" "$(SOURCE_DIR)/$(object).cpp") ) ]]; then\
 			echo -e "building object: \"$(object)\" \c";\

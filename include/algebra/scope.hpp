@@ -13,6 +13,7 @@ namespace mathgraph::algebra {
   struct Expression;
   extern shared_ptr<Expression> undefined;
   struct Scope;
+  typedef shared_ptr<Scope> scope_t;
   extern shared_ptr<Scope> empty_scope;
   struct Scope {
     shared_ptr<Expression> set_key(string key, shared_ptr<Expression> expr = undefined);
