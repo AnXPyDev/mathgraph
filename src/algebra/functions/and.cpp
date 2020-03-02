@@ -31,25 +31,30 @@ namespace mathgraph::algebra::functions {
   }
   expr_t And::_evaluate(expr_t expr_a, expr_t expr_b, scope_t scope) {
     expr_a = Expression::_evaluate(expr_a, scope);
-    expr_b = Expression::_evaluate(expr_b, scope);
     if (expr_a == "list") {
       vector<expr_t> new_list_elements;
       for (auto element : dynamic_cast<types::List*>(expr_a.get())->elements()) {
         new_list_elements.push_back(And::_evaluate(element, expr_b, scope));
       }
       return types::List::construct(new_list_elements);
-    } else if (expr_b == "list") {
+    }
+    bool b_expr_a = dynamic_cast<types::Boolean*>(Expression::_evaluate(types::Boolean::construct(expr_a)).get())->value();
+    if (!b_expr_a) {
+      return types::b_false;
+    }
+
+    expr_b = Expression::_evaluate(expr_b, scope);
+    if (expr_b == "list") {
       vector<expr_t> new_list_elements;
       for (auto element : dynamic_cast<types::List*>(expr_b.get())->elements()) {
         new_list_elements.push_back(And::_evaluate(expr_a, element, scope));
       }
       return types::List::construct(new_list_elements);
     }
-    bool b_expr_a = dynamic_cast<types::Boolean*>(Expression::_evaluate(types::Boolean::construct(expr_a)).get())->value();
     bool b_expr_b = dynamic_cast<types::Boolean*>(Expression::_evaluate(types::Boolean::construct(expr_b)).get())->value();
-    if (b_expr_a && b_expr_b) {
-      return expr_b;
+    if (!b_expr_b) {
+      return types::b_false;
     }
-    return types::b_false;
+    return expr_b;
   }
 }
